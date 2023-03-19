@@ -31,7 +31,7 @@ services:
       - ewm-db
       - stats-server
     entrypoint:
-        -
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/main-db
 
 
   ewm-db:

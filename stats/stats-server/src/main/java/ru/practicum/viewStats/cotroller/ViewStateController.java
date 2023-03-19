@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.viewStats.ViewStatsDto;
 import ru.practicum.viewStats.service.ViewStatsService;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,11 +21,10 @@ public class ViewStateController {
     public List<ViewStatsDto> getStats(@RequestParam(required = false) String start,
                                        @RequestParam(required = false) String end,
                                        @RequestParam List<String> uris,
-                                       @RequestParam(defaultValue = "false") Boolean unique){
+                                       @RequestParam(defaultValue = "false") Boolean unique) {
 
 
         return viewStatsService.getStats(LocalDateTime.parse(start, FORMATTER), LocalDateTime.parse(end, FORMATTER),
                 uris, unique);
     }
-
 }

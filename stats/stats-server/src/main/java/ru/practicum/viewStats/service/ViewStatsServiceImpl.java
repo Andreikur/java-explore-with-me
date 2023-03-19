@@ -23,7 +23,7 @@ public class ViewStatsServiceImpl implements ViewStatsService {
 
     @Transactional
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique){
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         if (uris == null || uris.isEmpty()) {
             return Collections.emptyList();
         }

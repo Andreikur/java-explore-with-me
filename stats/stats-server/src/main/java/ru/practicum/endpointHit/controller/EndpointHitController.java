@@ -17,7 +17,7 @@ public class EndpointHitController {
     private final EndpointHitService endpointHitService;
 
     @PostMapping
-    public EndpointHitDto addEndpointHit(@Valid @RequestBody EndpointHitDto endpointHitDto){
+    public EndpointHitDto addEndpointHit(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         return endpointHitService.addEndpointHit(endpointHitDto);
     }
 }
