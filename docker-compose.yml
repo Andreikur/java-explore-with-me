@@ -9,7 +9,7 @@ services:
     depends_on:
       - stats-db
     entrypoint:
-      -  SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+      -  SPRING_DATASOURCE_URL=jdbc:postgresql://db-stats:5432/postgres
 
   stats-db:
     image: postgres:14-alpine
@@ -28,10 +28,10 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - ewm-db
+      - main_db
       - stats-server
     entrypoint:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/postgres
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://main_db:5433/postgres
 
 
   ewm-db:
