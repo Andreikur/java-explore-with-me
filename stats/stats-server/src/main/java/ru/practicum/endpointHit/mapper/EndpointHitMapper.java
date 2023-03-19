@@ -2,7 +2,7 @@ package ru.practicum.endpointHit.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.endpointHit.dto.EndpointHitDto;
+import ru.practicum.endpointHit.EndpointHitDto;
 import ru.practicum.endpointHit.model.EndpointHit;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,7 +14,7 @@ public class EndpointHitMapper {
                 endpointHitDto.getApp(),
                 endpointHitDto.getUri(),
                 endpointHitDto.getIp(),
-                endpointHitDto.getTimeStamp()
+                endpointHitDto.getTimestamp()
         );
     }
 
@@ -24,7 +24,7 @@ public class EndpointHitMapper {
                 endpointHit.getApp(),
                 endpointHit.getUri(),
                 endpointHit.getIp(),
-                endpointHit.getTimeStamp()
+                endpointHit.getTimestamp()
         );
     }
 }

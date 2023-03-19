@@ -5,26 +5,36 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.endpointHit.repository.EndpointHitRepository;
 import ru.practicum.viewStats.ViewStatsDto;
-import ru.practicum.viewStats.repository.ViewStatsRepository;
+import ru.practicum.viewStats.mapper.ViewStatsMapper;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ViewStatsServiceImpl implements ViewStatsService {
-    private final ViewStatsRepository viewStatsRepository;
+    private final EndpointHitRepository endpointHitRepository;
 
     @Transactional
     @Override
-    public List<ViewStatsDto> getStats(Date start, Date end, List<String> uris, boolean unique){
-
-        List<ViewStatsDto> viewStatsDtos = new ArrayList<>();
-        return viewStatsDtos;
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique){
+        if (uris == null || uris.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (unique) {
+            return endpointHitRepository.getStatsUnique(start, end, uris).stream()
+                    .map(ViewStatsMapper::toViewStatsDto)
+                    .collect(Collectors.toList());
+        } else {
+            return endpointHitRepository.getStatsNotUnique(start, end, uris).stream()
+                    .map(ViewStatsMapper::toViewStatsDto)
+                    .collect(Collectors.toList());
+        }
     }
-
 }

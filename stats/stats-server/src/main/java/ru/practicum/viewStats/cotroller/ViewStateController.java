@@ -1,14 +1,13 @@
 package ru.practicum.viewStats.cotroller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.viewStats.ViewStatsDto;
 import ru.practicum.viewStats.service.ViewStatsService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -17,11 +16,17 @@ import java.util.List;
 public class ViewStateController {
     private final ViewStatsService viewStatsService;
 
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @GetMapping
-    public List<ViewStatsDto> getStats(){
+    public List<ViewStatsDto> getStats(@RequestParam(required = false) String start,
+                                       @RequestParam(required = false) String end,
+                                       @RequestParam List<String> uris,
+                                       @RequestParam(defaultValue = "false") Boolean unique){
 
 
-        return new List<ViewStatsDto>;
+        return viewStatsService.getStats(LocalDateTime.parse(start, FORMATTER), LocalDateTime.parse(end, FORMATTER),
+                uris, unique);
     }
 
 }

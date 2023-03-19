@@ -1,4 +1,4 @@
-package ru.practicum.endpointHit.dto;
+package ru.practicum.endpointHit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,5 +18,5 @@ public class EndpointHitDto {
     @NotEmpty
     private String ip;
     @NotEmpty
-    private String timeStamp;
+    private String timestamp;
 }

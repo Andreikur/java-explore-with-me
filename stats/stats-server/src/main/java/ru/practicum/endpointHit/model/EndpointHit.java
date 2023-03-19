@@ -32,5 +32,5 @@ public class EndpointHit {
 
     @NotEmpty
     @Column(name = "timestamp_endpoint")
-    private String timeStamp;
+    private String timestamp;
 }

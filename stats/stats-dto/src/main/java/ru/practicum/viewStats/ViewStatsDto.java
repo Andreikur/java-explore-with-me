@@ -13,5 +13,5 @@ public class ViewStatsDto {
     private String app;
     private String uri;
     @PositiveOrZero
-    private int hits;
+    private Long hits;
 }
