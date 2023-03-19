@@ -13,7 +13,7 @@ services:
 
   stats-db:
     image: postgres:14-alpine
-    container_name: db-stats
+    container_name: stats-db
     ports:
       - "6541:5432"
     entrypoint:
@@ -31,15 +31,15 @@ services:
       - ewm-db
       - stats-server
     entrypoint:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm_db:5433/ewm_main_db
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm_db:5433/ewm-db
 
 
   ewm-db:
     image: postgres:14-alpine
-    container_name: ewm_main_db
+    container_name: ewm-db
     ports:
       - "6542:5433"
     entrypoint:
-      - POSTGRES_DB=ewm_main_db
+      - POSTGRES_DB=ewm-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iaroot
