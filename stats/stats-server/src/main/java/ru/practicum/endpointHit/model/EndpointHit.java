@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "endpoint_hit", schema = "public")
@@ -32,5 +33,5 @@ public class EndpointHit {
 
     @NotEmpty
     @Column(name = "timestamp_endpoint")
-    private String timestamp;
+    private LocalDateTime timestamp;
 }

@@ -33,7 +33,6 @@ services:
     entrypoint:
         - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5433/ewm-main-db
 
-
   ewm-db:
     image: postgres:14-alpine
     container_name: ewm-db
