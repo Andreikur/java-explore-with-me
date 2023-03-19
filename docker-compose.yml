@@ -31,7 +31,7 @@ services:
       - ewm-db
       - stats-server
     entrypoint:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5433/ewm-db
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5433/ewm-main-db
 
 
   ewm-db:
@@ -40,6 +40,6 @@ services:
     ports:
       - "6542:5433"
     entrypoint:
-      - POSTGRES_DB=ewm-db
+      - POSTGRES_DB=ewm-main-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iaroot
