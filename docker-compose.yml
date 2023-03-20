@@ -16,7 +16,7 @@ services:
     container_name: stats-db
     ports:
       - "6541:5432"
-    entrypoint:
+    environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iamroot
@@ -38,7 +38,7 @@ services:
     container_name: ewm-db
     ports:
       - "6542:5433"
-    entrypoint:
+    environment:
       - POSTGRES_DB=ewm-main-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=iaroot
