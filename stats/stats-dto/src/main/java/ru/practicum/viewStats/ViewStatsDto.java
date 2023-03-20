@@ -12,6 +12,5 @@ import javax.validation.constraints.PositiveOrZero;
 public class ViewStatsDto {
     private String app;
     private String uri;
-    @PositiveOrZero
     private Long hits;
 }

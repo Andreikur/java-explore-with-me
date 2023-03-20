@@ -1,10 +1,8 @@
 package ru.practicum.endpointHit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.endpointHit.EndpointHitDto;
 import ru.practicum.endpointHit.service.EndpointHitService;
 
@@ -17,6 +15,7 @@ public class EndpointHitController {
     private final EndpointHitService endpointHitService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EndpointHitDto addEndpointHit(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         return endpointHitService.addEndpointHit(endpointHitDto);
     }

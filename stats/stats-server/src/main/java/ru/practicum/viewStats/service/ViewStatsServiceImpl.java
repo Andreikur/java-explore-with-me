@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ViewStatsServiceImpl implements ViewStatsService {
     private final EndpointHitRepository endpointHitRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         if (uris == null || uris.isEmpty()) {
