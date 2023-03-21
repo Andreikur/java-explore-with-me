@@ -6,7 +6,7 @@ import ru.practicum.viewStats.ViewStatsDto;
 import ru.practicum.viewStats.model.ViewStats;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ViewStatsMapper {
+public final class ViewStatsMapper {
 
     public static ViewStats toViewStats(ViewStatsDto viewStatsDto) {
         return new ViewStats(

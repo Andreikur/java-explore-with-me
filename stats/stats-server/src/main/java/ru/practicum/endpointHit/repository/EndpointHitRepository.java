@@ -12,21 +12,21 @@ import java.util.List;
 @RepositoryRestResource(path = "endpoint_hit")
 public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> {
 
-    @Query("select new ru.practicum.viewStats.model.ViewStats(e.app, e.uri, count(distinct e.ip)) " +
-            "from EndpointHit e " +
-            "where e.timestamp >= ?1 " +
-            "and e.timestamp <= ?2 " +
-            "and e.uri IN (?3) " +
-            "group by e.app, e.uri " +
-            "order by count(distinct e.ip) desc")
+    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(e.app, e.uri, COUNT(DISTINCT e.ip)) " +
+            "FROM EndpointHit e " +
+            "WHERE e.timestamp >= ?1 " +
+            "AND e.timestamp <= ?2 " +
+            "AND e.uri IN (?3) " +
+            "GROUP BY e.app, e.uri " +
+            "ORDER BY COUNT (DISTINCT e.ip) DESC ")
     List<ViewStats> getStatsUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select new ru.practicum.viewStats.model.ViewStats(e.app, e.uri, count(e.ip)) " +
-            "from EndpointHit e " +
-            "where e.timestamp >= ?1 " +
-            "and e.timestamp <= ?2 " +
-            "and e.uri IN (?3) " +
-            "group by e.app, e.uri " +
-            "order by count(e.ip) desc")
+    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(e.app, e.uri, COUNT(e.ip)) " +
+            "FROM EndpointHit e " +
+            "WHERE e.timestamp >= ?1 " +
+            "AND e.timestamp <= ?2 " +
+            "AND e.uri IN (?3) " +
+            "GROUP BY e.app, e.uri " +
+            "ORDER BY COUNT (e.ip) DESC ")
     List<ViewStats> getStatsNotUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

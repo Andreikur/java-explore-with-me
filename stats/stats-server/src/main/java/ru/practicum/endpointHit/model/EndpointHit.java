@@ -22,13 +22,10 @@ public class EndpointHit {
     @NotEmpty
     private String app;
 
-    //@NotEmpty
     private String uri;
 
-    //@NotEmpty
     private String ip;
 
-    //@NotEmpty
     @Column(name = "timestamp_endpoint")
     private LocalDateTime timestamp;
 }

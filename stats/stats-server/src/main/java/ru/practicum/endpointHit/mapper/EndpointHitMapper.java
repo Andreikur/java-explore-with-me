@@ -6,7 +6,7 @@ import ru.practicum.endpointHit.EndpointHitDto;
 import ru.practicum.endpointHit.model.EndpointHit;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EndpointHitMapper {
+public final class EndpointHitMapper {
 
     public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto) {
         return new EndpointHit(
