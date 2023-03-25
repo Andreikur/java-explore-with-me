@@ -39,7 +39,7 @@ public class AdminUserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUser(@RequestParam(required = false) List <Long> ids,
                                  @Positive @RequestParam(defaultValue = "0", required = false) int from,
-                                 @PositiveOrZero @RequestParam(defaultValue = "20", required = false) int size) {
+                                 @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
         return userService.getUser(ids, from, size);
     }
 

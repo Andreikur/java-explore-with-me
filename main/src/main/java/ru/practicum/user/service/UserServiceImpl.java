@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto addUser(UserDto userDto) {
-        User user = userRepository.save(UserMapper.toUser(userDto);
+        User user = userRepository.save(UserMapper.toUser(userDto));
         return UserMapper.toUserDto(user);
     }
 
@@ -32,10 +32,17 @@ public class UserServiceImpl implements UserService {
         List<User> userList = new ArrayList<>();
         int page = from/size;
         PageRequest pageRequest = PageRequest.of(page, size);
+        if(listId.isEmpty()) {
+            userList.addAll(userRepository.findAllPage(pageRequest));
+        } else {
+            userList.addAll(userRepository.findAllById(listId));
+        }
         return null;
     }
 
     @Override
-    public void removeUser(Long userId) {
+    @Transactional
+    public void removeUser(long userId) {
+        userRepository.deleteById(userId);
     }
 }

@@ -29,7 +29,17 @@ public final class UserMapper {
 
     public static List<User> toUser(Iterable<UserDto> usersDto) {
         List<User> userList = new ArrayList<>();
-        userList =
+        for (UserDto userDto : usersDto) {
+            userList.add(toUser(userDto));
+        }
         return userList;
+    }
+
+    public static List<UserDto> toUserDto(Iterable<User> users) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        for (User user : users) {
+            userDtoList.add(toUserDto(user));
+        }
+        return userDtoList;
     }
 }
