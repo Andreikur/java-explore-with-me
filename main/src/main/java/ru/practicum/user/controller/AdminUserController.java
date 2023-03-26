@@ -37,10 +37,10 @@ public class AdminUserController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUser(@RequestParam(required = false) List <Long> ids,
+    public List<UserDto> getUsers(@RequestParam(required = false) List <Long> ids,
                                  @Positive @RequestParam(defaultValue = "0", required = false) int from,
                                  @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
-        return userService.getUser(ids, from, size);
+        return userService.getUsers(ids, from, size);
     }
 
     /**
