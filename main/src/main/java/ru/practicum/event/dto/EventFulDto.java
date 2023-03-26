@@ -1,14 +1,11 @@
 package ru.practicum.event.dto;
 
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.category.model.Category;
 import ru.practicum.enums.State;
 import ru.practicum.location.model.Location;
 import ru.practicum.user.dto.UserShortDto;
 
-import java.time.LocalDateTime;
-
-public class EvenFulDto {
+public class EventFulDto {
     private Long id;
     private String annotation;
     private CategoryDto category;

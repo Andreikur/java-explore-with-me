@@ -2,8 +2,10 @@ package ru.practicum.event.service;
 
 import ru.practicum.event.dto.EventShortDto;
 
+import java.util.List;
+
 public interface EventService {
-    EventShortDto getEventThisUser();
+    List<EventShortDto> getEventThisUser(Long userId, int from, int size);
     EventShortDto addEvent();
     EventShortDto getEventThisUserFull();
     EventShortDto updateEventThisUser();

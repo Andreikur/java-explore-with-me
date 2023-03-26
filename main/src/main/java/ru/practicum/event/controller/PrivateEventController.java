@@ -1,12 +1,14 @@
 package ru.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.service.EventService;
+
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,7 +17,10 @@ public class PrivateEventController {
     private final EventService eventService;
 
     @GetMapping
-    public EventShortDto getEventThisUser(@PathVariable String userId) {
-        return eventService.getEventThisUser();
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> getEventThisUser(@PathVariable Long userId,
+                                                @Positive @RequestParam(defaultValue = "0", required = false) int from,
+                                                @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
+        return eventService.getEventThisUser(userId, from, size);
     };
 }
