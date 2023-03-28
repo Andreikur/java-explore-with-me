@@ -2,32 +2,50 @@ package ru.practicum.event.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.mapstruct.Mapper;
-import ru.practicum.event.dto.EventFulDto;
+import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Event;
+import ru.practicum.user.mapper.UserMapper;
 
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Mapper
-public interface EventMapper {
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    Event toEvent(EventShortDto eventShortDto);
-    Event toEvent(EventFulDto eventFulDto);
-    EventShortDto  toEventShortDto(Event event);
-    EventFulDto toEventFulDto(Event event);
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EventMapper {
 
-/*    public static Event toEvent(EventShortDto eventShortDto) {
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static Event toEvent(EventShortDto eventShortDto) {
         return new Event(
                 eventShortDto.getId(),
                 eventShortDto.getAnnotation(),
-                eventShortDto.getCategory(),
+                CategoryMapper.toCategory(eventShortDto.getCategory()),
                 null,
-                eventShortDto.getEventDate(),
                 null,
-                eventShortDto.getInitiator(),
-                eventShortDto.isPaid(),
                 null,
-                null
+                LocalDateTime.parse(eventShortDto.getEventDate(), FORMATTER),
+                UserMapper.toUser(eventShortDto.getInitiator()),
+                null,
+                eventShortDto.getPaid(),
+                null,
+                null,
+                null,
+                null,
+                eventShortDto.getTitle(),
+                eventShortDto.getViews()
         );
-    }*/
+    }
+
+    public static EventShortDto toEventShortDto(Event event) {
+        return new EventShortDto(
+                event.getId(),
+                event.getAnnotation(),
+                CategoryMapper.toCategoryDto(event.getCategory()),
+                event.getEventDate().format(FORMATTER),
+                UserMapper.toUserShortDto(event.getInitiator()),
+                event.getPaid(),
+                event.getTitle(),
+                event.getViews()
+        );
+    }
 }

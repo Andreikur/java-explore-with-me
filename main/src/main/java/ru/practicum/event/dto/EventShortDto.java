@@ -15,7 +15,7 @@ public class EventShortDto {
     private CategoryDto category;
     private String eventDate;           //(в формате "yyyy-MM-dd HH:mm:ss")
     private UserShortDto initiator;
-    private boolean paid;               //оплачиваемый?
+    private Boolean paid;               //оплачиваемый?
     private String title;
-    private Integer views;
+    private Long views;
 }

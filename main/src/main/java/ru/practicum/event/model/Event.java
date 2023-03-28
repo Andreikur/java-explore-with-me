@@ -21,7 +21,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String annotation;
-
     @OneToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
