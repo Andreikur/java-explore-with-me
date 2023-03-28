@@ -11,21 +11,21 @@ import ru.practicum.user.dto.UserShortDto;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventFulDto {
-    private Long id;
+public class UpdateEventUserRequest {
+    //private Long id;
     private String annotation;
-    private CategoryDto category;
-    private  Long confirmedRequests;  //потвержденные запросы
-    private String createdOn;            //Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss")
+    private Integer category;
+    //private  Long confirmedRequests;
+    //private String createdOn;
     private String description;
     private String eventDate;           //(в формате "yyyy-MM-dd HH:mm:ss")
-    private UserShortDto initiator;
+    //private UserShortDto initiator;
     private Location location;
     private Boolean paid;               //оплачиваемый?
     private Integer participanLimit;
-    private String publishedOn;         //Нужна ли пре-модерация заявок на участие
+    //private String publishedOn;
     private Boolean requestModeration;
-    private State state;
+    private State state;                //???????????????
     private String title;
-    private Integer views;
+    //private Integer views;
 }
