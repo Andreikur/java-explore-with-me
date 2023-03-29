@@ -12,6 +12,5 @@ public interface EventService {
     EventFulDto addEvent(Long userId, EventFulDto eventFulDto);
     EventFulDto getEventFullThisUser(Long userId, Long eventId);
     EventFulDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
-    EventShortDto updateEventThisUserRequest();
 
 }

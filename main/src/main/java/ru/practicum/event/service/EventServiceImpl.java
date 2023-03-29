@@ -14,6 +14,8 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.request.dto.RequestDto;
+import ru.practicum.request.dto.RequestUpdateDto;
+import ru.practicum.request.service.RequestService;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
@@ -80,11 +82,4 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(event);
     }
 
-
-
-    @Transactional
-    @Override
-    public EventShortDto updateEventThisUserRequest() {
-        return null;
-    }
 }

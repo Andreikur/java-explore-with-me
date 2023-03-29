@@ -22,7 +22,7 @@ public class EventFulDto {
     private UserShortDto initiator;
     private Location location;
     private Boolean paid;               //оплачиваемый?
-    private Integer participanLimit;
+    private Integer participantLimit;
     private String publishedOn;         //Нужна ли пре-модерация заявок на участие
     private Boolean requestModeration;
     private State state;

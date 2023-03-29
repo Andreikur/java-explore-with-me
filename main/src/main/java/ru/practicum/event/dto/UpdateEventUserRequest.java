@@ -22,7 +22,7 @@ public class UpdateEventUserRequest {
     //private UserShortDto initiator;
     private Location location;
     private Boolean paid;               //оплачиваемый?
-    private Integer participanLimit;
+    private Integer participantLimit;
     //private String publishedOn;
     private Boolean requestModeration;
     private State state;                //???????????????

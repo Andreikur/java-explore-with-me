@@ -39,7 +39,7 @@ public class Event {
     private Location location;
     private Boolean paid;   //оплачиваемый?
     @Column(name = "participant_limit")
-    private Integer participanLimit;
+    private Integer participantLimit;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")

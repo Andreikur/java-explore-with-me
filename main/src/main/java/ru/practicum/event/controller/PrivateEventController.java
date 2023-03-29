@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFulDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.RequestStatusUpdateResult;
 import ru.practicum.event.dto.UpdateEventUserRequest;
 import ru.practicum.event.service.EventService;
 import ru.practicum.request.dto.RequestDto;
@@ -78,7 +79,7 @@ public class PrivateEventController {
     }
 
     /**
-     * Получение информации о запросах н аучастие в событии текущего пользователя
+     * Получение информации о запросах на участие в событии текущего пользователя
      * @param userId
      * @param eventId
      * @return
@@ -90,12 +91,18 @@ public class PrivateEventController {
         return requestService.getEventThisUserRequest(userId, eventId);
     }
 
+    /**
+     * Изменение статуса(подтверждена, отменена) заявок на участие в событии текущего пользователя
+     * @param userId
+     * @param eventId
+     * @param requestUpdateDto
+     * @return
+     */
     @PatchMapping("/{eventId/requests}")
     @ResponseStatus(HttpStatus.OK)
-    public List<RequestDto> updateStatusRequestsThisUser(@PathVariable Long userId,
-                                                         @PathVariable Long eventId,
-                                                         @Valid @RequestBody RequestUpdateDto requestUpdateDto) {
+    public RequestStatusUpdateResult updateStatusRequestsThisUser(@PathVariable Long userId,
+                                                                  @PathVariable Long eventId,
+                                                                  @Valid @RequestBody RequestUpdateDto requestUpdateDto) {
         return requestService.updateStatusRequestsThisUser(userId, eventId, requestUpdateDto);
     }
-
 }
