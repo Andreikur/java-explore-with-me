@@ -8,6 +8,7 @@ import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
 import ru.practicum.event.service.EventService;
 import ru.practicum.request.dto.RequestDto;
+import ru.practicum.request.dto.RequestUpdateDto;
 import ru.practicum.request.service.RequestService;
 
 import javax.validation.Valid;
@@ -76,12 +77,25 @@ public class PrivateEventController {
         return eventService.updateEventThisUser(userId, eventId, updateEventUserRequest);
     }
 
+    /**
+     * Получение информации о запросах н аучастие в событии текущего пользователя
+     * @param userId
+     * @param eventId
+     * @return
+     */
     @GetMapping("/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
-    public List<RequestDto> getEventThisUserRequest (@PathVariable Long userId,
+    public List<RequestDto> getEventThisUserRequest(@PathVariable Long userId,
                                                      @PathVariable Long eventId) {
         return requestService.getEventThisUserRequest(userId, eventId);
     }
 
+    @PatchMapping("/{eventId/requests}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RequestDto> updateStatusRequestsThisUser(@PathVariable Long userId,
+                                                         @PathVariable Long eventId,
+                                                         @Valid @RequestBody RequestUpdateDto requestUpdateDto) {
+        return requestService.updateStatusRequestsThisUser(userId, eventId, requestUpdateDto);
+    }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.request.dto.RequestDto;
+import ru.practicum.request.dto.RequestUpdateDto;
 
 import java.util.List;
 
@@ -21,4 +22,12 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestDto> getEventThisUserRequest(Long userId, Long eventId) {
         return requestService.getEventThisUserRequest(userId, eventId);
     }
+
+    @Transactional
+    @Override
+    public List<RequestDto> updateStatusRequestsThisUser(Long userId, Long eventId, RequestUpdateDto requestUpdateDto) {
+
+    }
+
+
 }
