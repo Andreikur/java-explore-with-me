@@ -98,7 +98,7 @@ public class PrivateEventController {
      * @param requestUpdateDto
      * @return
      */
-    @PatchMapping("/{eventId/requests}")
+    @PatchMapping("/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public RequestStatusUpdateResult updateStatusRequestsThisUser(@PathVariable Long userId,
                                                                   @PathVariable Long eventId,

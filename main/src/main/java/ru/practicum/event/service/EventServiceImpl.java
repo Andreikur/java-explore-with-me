@@ -19,6 +19,7 @@ import ru.practicum.request.service.RequestService;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,5 +82,21 @@ public class EventServiceImpl implements EventService {
         //
         return EventMapper.toEventFulDto(event);
     }
+
+    @Override
+    public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
+                                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
+
+        //написать логику
+        return null;
+    }
+
+    @Override
+    public EventFulDto updateEvent(Long eventId, EventShortDto eventShortDto) {
+
+        //дописать логику
+        return null;
+    }
+
 
 }
