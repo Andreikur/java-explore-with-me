@@ -83,6 +83,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(event);
     }
 
+    @Transactional
     @Override
     public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
                                                   LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
@@ -91,6 +92,7 @@ public class EventServiceImpl implements EventService {
         return null;
     }
 
+    @Transactional
     @Override
     public EventFulDto updateEvent(Long eventId, EventShortDto eventShortDto) {
 
@@ -98,5 +100,11 @@ public class EventServiceImpl implements EventService {
         return null;
     }
 
+    @Transactional
+    @Override
+    public List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size) {
 
+        //дописать логику
+        return null;
+    }
 }

@@ -40,13 +40,15 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CategoryDto> getCategories(int from, int size) {
+    public List<CategoryDto> getAllCategories(int from, int size) {
         List<Category> categoryList =new ArrayList<>();
         int page = from/size;
         PageRequest pageRequest = PageRequest.of(page, size);
         categoryList.addAll(categoriesRepository.findAllPage(pageRequest));
         return null;
     }
+
+
 
     @Transactional(readOnly = true)
     @Override

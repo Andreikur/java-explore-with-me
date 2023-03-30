@@ -20,13 +20,13 @@ public class PublicCategoriesController {
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryDto> getAllCategories(@Positive @RequestParam(defaultValue = "0", required = false) int from,
                                               @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
-        return categoryService.getCategories(from, size);
+        return categoryService.getAllCategories(from, size);
     }
 
     @GetMapping("{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto getCategory (@PathVariable Long catId) {
-
+        return categoryService.getCategory(catId);
     }
 
 }

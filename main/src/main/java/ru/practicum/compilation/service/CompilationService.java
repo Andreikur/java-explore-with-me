@@ -1,5 +1,12 @@
 package ru.practicum.compilation.service;
 
-public interface CompilationService {
+import ru.practicum.compilation.dto.CompilationDto;
 
+import java.util.List;
+
+public interface CompilationService {
+    List<CompilationDto> getCompilationsByParameters(Boolean pinned, int from, int size);
+    CompilationDto getCompilation(Long compId);
+    CompilationDto addCompilation(CompilationDto compilationDto);
+    void removeCompilation(Long compId);
 }

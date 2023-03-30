@@ -47,7 +47,7 @@ public class AdminUserController {
      * Удаление пользователя
      * @param userId
      */
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeUser(@PathVariable Long userId) {
         userService.removeUser(userId);

@@ -22,19 +22,29 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEmailNotUniqueException(final MailNotUniqueException e) {
+        log.info("{409}", e.getMessage(), e);
         return new ErrorResponse(String.format("Почта не уникальна"));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleRequestAlreadyConfirmedException(final RequestAlreadyConfirmedException exception) {
+        log.info("{409}", exception.getMessage(), exception);
         return new ErrorResponse(String.format("Запрос уже потвержден"));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleParticipantLimitException(final ParticipantLimitException exception) {
+        log.info("{409}", exception.getMessage(), exception);
         return new ErrorResponse(String.format("Превышен лимит участников"));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleBadRequestException(final BadRequestException exception) {
+        log.info("{400}", exception.getMessage(), exception);
+        return new ErrorResponse(String.format("Запрос составлен не корректно"));
     }
 
     @ExceptionHandler

@@ -95,18 +95,18 @@ public final class EventMapper {
         );
     }
 
-    /*public static List<Event> toEvent(Iterable<EventShortDto> eventShortDtos) {
-        List<Event> eventList = new ArrayList<>();
-        for (EventShortDto eventShortDto : eventShortDtos) {
-            eventList.add(toEvent(eventShortDto));
-        }
-        return eventList;
-    }*/
-
-    public static List<Event> toEvent(Iterable<EventFulDto> eventsFulDto) {
+    public static List<Event> toEventFromEventFulDto(Iterable<EventFulDto> eventsFulDto) {
         List<Event> eventList = new ArrayList<>();
         for (EventFulDto eventFulDto : eventsFulDto) {
             eventList.add(toEvent(eventFulDto));
+        }
+        return eventList;
+    }
+
+    public static List<Event> toEvent(Iterable<EventShortDto> eventShortDtos) {
+        List<Event> eventList = new ArrayList<>();
+        for (EventShortDto eventShortDto : eventShortDtos) {
+            eventList.add(toEvent(eventShortDto));
         }
         return eventList;
     }
