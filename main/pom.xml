@@ -95,7 +95,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.practicum.main.Main</mainClass>
+                    <mainClass>ru.practicum.Main</mainClass>
                     <layout>JAR</layout>
                 </configuration>
             </plugin>
