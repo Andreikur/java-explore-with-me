@@ -44,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categoryList =new ArrayList<>();
         int page = from/size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        categoryList.addAll(categoriesRepository.findAllPage(pageRequest));
-        return null;
+        categoryList.addAll(categoriesRepository.findAll(pageRequest).toList());
+        return CategoryMapper.toCategoryDto(categoryList);
     }
 
 

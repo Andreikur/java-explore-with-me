@@ -1,4 +1,4 @@
-package ru.practicum.client;
+/* package ru.practicum.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 public class ViewStatsClient extends BaseClient {
     private static final String API_PREFIX = "/stats";
 
-    @Autowired
+    //@Autowired
     public ViewStatsClient(@Value("${stats.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
@@ -22,7 +22,8 @@ public class ViewStatsClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getStats(long id) {
+    public ResponseEntity <Object> getStats(Long id) {
         return get("/" + id);
     }
 }
+*/

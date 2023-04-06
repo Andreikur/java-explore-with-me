@@ -25,16 +25,16 @@ public class AdminEventController {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<EventFulDto> getEventsByCondition(@RequestParam(required = false) List<Long> users,
-                                                  @RequestParam(required = false) List<String> states,
-                                                  @RequestParam(required = false) List<Long> categories,
-                                                  @RequestParam(required = false) String rangeStart,
-                                                  @RequestParam(required = false) String rangeEnd,
-                                                  @Positive @RequestParam(defaultValue = "0", required = false) int from,
-                                                  @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
-        return eventService.getEventsByCondition(users, states, categories, LocalDateTime.parse(rangeStart, FORMATTER),
-                LocalDateTime.parse(rangeEnd, FORMATTER), from, size);
+    //@ResponseStatus(HttpStatus.OK)
+    public List<EventFulDto> getEventsByCondition(@RequestParam(name = "users", required = false) List<Long> users,
+                                                  @RequestParam(name = "states", required = false) List<String> states,
+                                                  @RequestParam(name = "categories", required = false) List<Long> categories,
+                                                  @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                                  @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                                  @RequestParam(name = "from", defaultValue = "0", required = false) Integer from,
+                                                  @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
+
+        return eventService.getEventsByCondition(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/{eventId}")

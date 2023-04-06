@@ -1,5 +1,6 @@
 package ru.practicum.category.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,6 @@ public interface CategoriesRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT b FROM Category b ")
     List<Category> findAllPage(Pageable pageable);
+
+    Page<Category> findAll(Pageable pageable);
 }

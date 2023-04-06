@@ -22,4 +22,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findAllRequestThisUserPage(Long userId, Pageable pageable);
 
     Optional<Request> findByRequesterAndId(Long userId, Long requestId);
+    Boolean existsByRequesterAndEvent(Long userId, Long eventId);
+    List<Request> findAllByEvent(Long eventId);
 }

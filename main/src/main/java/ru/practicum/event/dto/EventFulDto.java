@@ -27,5 +27,5 @@ public class EventFulDto {
     private Boolean requestModeration;
     private State state;
     private String title;
-    private Integer views;
+    private Long views;
 }

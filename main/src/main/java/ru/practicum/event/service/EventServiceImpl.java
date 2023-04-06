@@ -13,13 +13,11 @@ import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.request.dto.RequestDto;
-import ru.practicum.request.dto.RequestUpdateDto;
-import ru.practicum.request.service.RequestService;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,7 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional(readOnly = true)
     @Override
@@ -86,10 +85,55 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
-                                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
+                                                  String rangeStart, String rangeEnd, int from, int size) {
+        //LocalDateTime rangeStartDate = LocalDateTime.parse(rangeStart, FORMATTER);
+        //LocalDateTime rangeEndDate = LocalDateTime.parse(rangeEnd, FORMATTER);
 
-        //написать логику
-        return null;
+        List<Event> eventList = new ArrayList<>();
+
+/*        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Event> query = builder.createQuery(Event.class);
+
+        Root<Event> root = query.from(Event.class);
+        Predicate criteria = builder.conjunction();
+
+        if (categories != null && categories.size() > 0) {
+            Predicate containCategories = root.get("category").in(categories);
+            criteria = builder.and(criteria, containCategories);
+        }
+
+        if (users != null && users.size() > 0) {
+            Predicate containUsers = root.get("initiator").in(users);
+            criteria = builder.and(criteria, containUsers);
+        }
+
+        if (states != null) {
+            Predicate containStates = root.get("state").in(states);
+            criteria = builder.and(criteria, containStates);
+        }
+
+        if (rangeStart != null) {
+            Predicate greaterTime = builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), rangeStart);
+            criteria = builder.and(criteria, greaterTime);
+        }
+        if (rangeEnd != null) {
+            Predicate lessTime = builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), rangeEnd);
+            criteria = builder.and(criteria, lessTime);
+        }
+
+        query.select(root).where(criteria);
+        List<Event> events = entityManager.createQuery(query)
+                .setFirstResult(from)
+                .setMaxResults(size)
+                .getResultList();
+
+        if (events.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        setView(events);
+        return EventMapper.toEventFulDto(events);*/
+        return EventMapper.toEventFulDto(eventList);
     }
 
     @Transactional
@@ -102,9 +146,52 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size) {
+    public List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
+                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                         Boolean onlyAvailable, String sort, int from, int size) {
+
 
         //дописать логику
         return null;
     }
+
+/*    public void setView(List<Event> events) {
+        LocalDateTime start = events.get(0).getCreatedOn();
+        List<String> uris = new ArrayList<>();
+        Map<String, Event> eventsUri = new HashMap<>();
+        String uri = "";
+        for (Event event : events) {
+            if (start.isBefore(event.getCreatedOn())) {
+                start = event.getCreatedOn();
+            }
+            uri = "/events/" + event.getId();
+            uris.add(uri);
+            eventsUri.put(uri, event);
+            event.setViews(0L);
+        }
+
+        String startTime = start.format(FORMATTER);
+        String endTime = LocalDateTime.now().format(FORMATTER);
+
+        List<ViewStatsDto> statsDtoList = getStats(startTime, endTime, uris);
+        statsDtoList.forEach((stat) ->
+                eventsUri.get(stat.getUri()).setViews(stat.getHits()));
+    }*/
+
+/*    public void setView(Event event) {
+        String startTime = event.getCreatedOn().format(FORMATTER);
+        String endTime = LocalDateTime.now().format(FORMATTER);
+        List<String> uris = List.of("/events/" + event.getId());
+
+        List<ViewStatsDto> stats = getStats(startTime, endTime, uris);
+        if (stats.size() == 1) {
+            event.setViews(stats.get(0).getHits());
+        } else {
+            event.setViews(0L);
+        }
+    }*/
+
+/*   private List<ViewStatsDto> getStats(String startTime, String endTime, List<String> uris) {
+        return statClient.getStats(startTime, endTime, uris, false);
+    }*/
 }

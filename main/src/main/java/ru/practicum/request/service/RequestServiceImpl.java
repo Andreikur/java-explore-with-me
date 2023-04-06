@@ -8,18 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.enums.RequestStatus;
 import ru.practicum.event.dto.RequestStatusUpdateResult;
+import ru.practicum.exception.*;
 import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.ParticipantLimitException;
-import ru.practicum.exception.RequestAlreadyConfirmedException;
 import ru.practicum.request.dto.RequestDto;
 import ru.practicum.request.dto.RequestUpdateDto;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,11 +104,31 @@ public class RequestServiceImpl implements RequestService {
 
     @Transactional
     @Override
-    public RequestDto addRequest(Long userId, RequestDto requestDto) {
-        userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        Request request = requestRepository.save(RequestMapper.toRequest(requestDto));
-        return RequestMapper.toRequestDto(request);
+    public RequestDto addRequest(Long userId, Long eventId) {
+        if (requestRepository.existsByRequesterAndEvent(userId, eventId)) {
+            log.info("Запрос уже существует");
+            throw new RequestAlreadyConfirmedException("Запрос уже существует");
+        }
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new NotFoundException("События с таким Id не существует"));
+        if (event.getInitiator().getId().equals(userId)) {
+            throw new BadRequestException("Инициатор не может добавить запрос на сое событие");
+        }
+        if (event.getPublishedOn() == null) {
+            throw new EventIsNotPublishedException("Событие еще не опубликовано");
+        }
+        List<Request> requests = requestRepository.findAllByEvent(eventId);
+
+        if (!event.getRequestModeration() && requests.size() >= event.getParticipantLimit()) {
+            throw new ParticipantLimitException("Превышен лимит участников");
+        }
+
+        Request request = new Request();
+        request.setCreated(LocalDateTime.now());
+        request.setEvent(eventId);
+        request.setRequester(userId);
+        request.setStatus(RequestStatus.PENDING);
+        return RequestMapper.toRequestDto(requestRepository.save(request));
     }
 
     @Transactional
