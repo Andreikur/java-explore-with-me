@@ -15,7 +15,7 @@ public interface EventService {
     List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
                                            String rangeStart, String rangeEnd, int from, int size);
     EventFulDto updateEvent(Long eventId, EventShortDto eventShortDto);
-    List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
-                                                  LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, int from, int size);
+    List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, String rangeStart,
+                                                  String rangeEnd, Boolean onlyAvailable, String sort, int from, int size);
 
 }

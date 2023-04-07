@@ -21,16 +21,15 @@ public class PublicEventController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventFulDto> searchForEventsByParameters(@RequestParam(required = false) String text,
-                                                  @RequestParam(required = false) List<Long> categories,
-                                                  @RequestParam(required = false) Boolean paid,
-                                                  @RequestParam(required = false) String rangeStart,
-                                                  @RequestParam(required = false) String rangeEnd,
-                                                  @RequestParam(required = false) Boolean onlyAvailable,                    //события у которых не исчерпан лимит запросов на участие
-                                                  @RequestParam(required = false) String sort,                              //Вариант сортировки: по дате события или по количеству просмотров (Available values : EVENT_DATE, VIEWS)
+    public List<EventFulDto> searchForEventsByParameters(@RequestParam(name = "text", required = false) String text,
+                                                  @RequestParam(name = "categories", required = false) List<Long> categories,
+                                                  @RequestParam(name = "paid", required = false) Boolean paid,
+                                                  @RequestParam(name = "rangeStart", required = false) String rangeStart,
+                                                  @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+                                                  @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,                    //события у которых не исчерпан лимит запросов на участие
+                                                  @RequestParam(name = "sort", required = false) String sort,                              //Вариант сортировки: по дате события или по количеству просмотров (Available values : EVENT_DATE, VIEWS)
                                                   @Positive @RequestParam(defaultValue = "0", required = false) int from,
                                                   @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
-        return eventService.searchForEventsByParameters(text, categories, paid,  LocalDateTime.parse(rangeStart, FORMATTER),
-                LocalDateTime.parse(rangeEnd, FORMATTER), onlyAvailable, sort, from, size);
+        return eventService.searchForEventsByParameters(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 }

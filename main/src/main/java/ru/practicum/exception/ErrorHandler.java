@@ -18,7 +18,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException exception) {
         log.info("{404}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "Не найдено",
                 HttpStatus.NOT_FOUND.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 

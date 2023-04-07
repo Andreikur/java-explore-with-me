@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.enums.SortValue;
 import ru.practicum.event.dto.EventFulDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
@@ -16,10 +17,17 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final EntityManager entityManager;
     private final UserRepository userRepository;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -79,6 +88,10 @@ public class EventServiceImpl implements EventService {
         //
         //
         //
+
+
+
+
         return EventMapper.toEventFulDto(event);
     }
 
@@ -86,12 +99,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
                                                   String rangeStart, String rangeEnd, int from, int size) {
-        //LocalDateTime rangeStartDate = LocalDateTime.parse(rangeStart, FORMATTER);
-        //LocalDateTime rangeEndDate = LocalDateTime.parse(rangeEnd, FORMATTER);
+        LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
+        LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
 
-        List<Event> eventList = new ArrayList<>();
-
-/*        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
 
         Root<Event> root = query.from(Event.class);
@@ -113,11 +124,11 @@ public class EventServiceImpl implements EventService {
         }
 
         if (rangeStart != null) {
-            Predicate greaterTime = builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), rangeStart);
+            Predicate greaterTime = builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), start);
             criteria = builder.and(criteria, greaterTime);
         }
         if (rangeEnd != null) {
-            Predicate lessTime = builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), rangeEnd);
+            Predicate lessTime = builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), end);
             criteria = builder.and(criteria, lessTime);
         }
 
@@ -131,9 +142,13 @@ public class EventServiceImpl implements EventService {
             return new ArrayList<>();
         }
 
-        setView(events);
-        return EventMapper.toEventFulDto(events);*/
-        return EventMapper.toEventFulDto(eventList);
+        //Увеличить колво просмотров
+
+        //setView(events);
+
+        //
+        return EventMapper.toEventFulDto(events);
+        //return EventMapper.toEventFulDto(eventList);
     }
 
     @Transactional
@@ -147,12 +162,80 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
-                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                         String rangeStart, String rangeEnd,
                                                          Boolean onlyAvailable, String sort, int from, int size) {
+        LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
+        LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
 
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Event> query = builder.createQuery(Event.class);
 
-        //дописать логику
-        return null;
+        Root<Event> root = query.from(Event.class);
+        Predicate criteria = builder.conjunction();
+
+        if (text != null) {
+            Predicate annotationContain = builder.like(builder.lower(root.get("annotation")),
+                    "%" + text.toLowerCase() + "%");
+            Predicate descriptionContain = builder.like(builder.lower(root.get("description")),
+                    "%" + text.toLowerCase() + "%");
+            Predicate containText = builder.or(annotationContain, descriptionContain);
+
+            criteria = builder.and(criteria, containText);
+        }
+
+        if (categories != null && categories.size() > 0) {
+            Predicate containStates = root.get("category").in(categories);
+            criteria = builder.and(criteria, containStates);
+        }
+
+        if (paid != null) {
+            Predicate isPaid;
+            if (paid) {
+                isPaid = builder.isTrue(root.get("paid"));
+            } else {
+                isPaid = builder.isFalse(root.get("paid"));
+            }
+            criteria = builder.and(criteria, isPaid);
+        }
+
+        if (rangeStart != null) {
+            Predicate greaterTime = builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), start);
+            criteria = builder.and(criteria, greaterTime);
+        }
+        if (rangeEnd != null) {
+            Predicate lessTime = builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), end);
+            criteria = builder.and(criteria, lessTime);
+        }
+
+        query.select(root).where(criteria).orderBy(builder.asc(root.get("eventDate")));
+        List<Event> events = entityManager.createQuery(query)
+                .setFirstResult(from)
+                .setMaxResults(size)
+                .getResultList();
+
+        /*if (onlyAvailable) {
+            events = events.stream()
+                    .filter((event -> event.getConfirmedRequests() < (long) event.getParticipantLimit()))
+                    .collect(Collectors.toList());
+        }*/
+
+        if (sort != null) {
+            if (sort.equals(SortValue.EVENT_DATE)) {
+                events = events.stream().sorted(Comparator.comparing(Event::getEventDate)).collect(Collectors.toList());
+            } else {
+                events = events.stream().sorted(Comparator.comparing(Event::getViews)).collect(Collectors.toList());
+            }
+        }
+
+        /*if (events.size() == 0) {
+            return new ArrayList<>();
+        }*/
+
+        //Дописать увеличение просмотров
+
+        //setView(events);
+        //sendStat(events, request);
+        return EventMapper.toEventFulDto(events);
     }
 
 /*    public void setView(List<Event> events) {
