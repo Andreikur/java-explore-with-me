@@ -1,9 +1,6 @@
 package ru.practicum.event.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.category.Pattern;
 import ru.practicum.category.model.Category;
 import ru.practicum.enums.State;
@@ -26,6 +23,7 @@ public class Event {
     private String annotation;
     @OneToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ToString.Exclude
     private Category category;
     @Column(name = "confirmed_requests")
     private Long confirmedRequests;
@@ -36,9 +34,11 @@ public class Event {
     private LocalDateTime eventDate;
     @OneToOne
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
+    @ToString.Exclude
     private User initiator;
     @OneToOne
     @JoinColumn(name = "location_id", referencedColumnName = "id")
+    @ToString.Exclude
     private Location location;
     private Boolean paid;   //оплачиваемый?
     @Column(name = "participant_limit")

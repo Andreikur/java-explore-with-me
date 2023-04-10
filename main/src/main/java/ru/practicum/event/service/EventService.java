@@ -1,23 +1,22 @@
 package ru.practicum.event.service;
 
-import ru.practicum.event.dto.EventFulDto;
+import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
+import ru.practicum.location.model.Location;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface EventService {
     List<EventShortDto> getEventThisUser(Long userId, int from, int size);
-    EventFulDto addEvent(Long userId, NewEventDto newEventDto);
-    EventFulDto getEventFullThisUser(Long userId, Long eventId);
-    EventFulDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
-    List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
-                                           String rangeStart, String rangeEnd, int from, int size);
-    EventFulDto updateEvent(Long eventId, EventShortDto eventShortDto);
-    List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, String rangeStart,
-                                                  String rangeEnd, Boolean onlyAvailable, String sort, int from, int size);
+    EventFullDto addEvent(Long userId, NewEventDto newEventDto, Location location);
+    EventFullDto getEventFullThisUser(Long userId, Long eventId);
+    EventFullDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
+    List<EventFullDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
+                                            String rangeStart, String rangeEnd, int from, int size);
+    EventFullDto updateEvent(Long eventId, EventShortDto eventShortDto);
+    List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, String rangeStart,
+                                                   String rangeEnd, Boolean onlyAvailable, String sort, int from, int size);
 
 }

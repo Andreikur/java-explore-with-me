@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoriesRepository;
 import ru.practicum.enums.SortValue;
 import ru.practicum.enums.State;
 import ru.practicum.enums.StateActionForUser;
-import ru.practicum.event.dto.EventFulDto;
+import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
@@ -22,10 +21,7 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.EventIsPublishedException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.WrongTimeException;
-import ru.practicum.location.mapper.LocationMapper;
 import ru.practicum.location.model.Location;
-import ru.practicum.location.repository.LocationRepository;
-import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
@@ -50,7 +46,6 @@ public class EventServiceImpl implements EventService {
     private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final CategoriesRepository categoriesRepository;
-    private final LocationRepository locationRepository;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional(readOnly = true)
@@ -68,31 +63,30 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFulDto addEvent(Long userId, NewEventDto newEventDto) {
+    public EventFullDto addEvent(Long userId, NewEventDto newEventDto, Location location) {
         Category category = categoriesRepository.findById(newEventDto.getCategory())
                 .orElseThrow(() -> new NotFoundException(""));
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        //Event event = EventMapper.toEvent(newEventDto);
-        Location location = locationRepository.save(LocationMapper.toLocation(newEventDto.getLocation()));
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
 
         if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new WrongTimeException("Дата должна быть в будущем");
         }
         Event event = EventMapper.toEvent(newEventDto);
-        event.setLocation(location);        //????
         event.setConfirmedRequests(0L);
         event.setInitiator(user);
         event.setCategory(category);
-        EventFulDto eventFulDto = EventMapper.toEventFulDto(eventRepository.save(event));
-        return eventFulDto;
-        //return EventMapper.toEventFulDto(event);
+        event.setViews(0L);
+        event.setLocation(location);
+        event.setPublishedOn(LocalDateTime.now());
+        EventFullDto eventFullDto = EventMapper.toEventFulDto(eventRepository.save(event));
+        return eventFullDto;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public EventFulDto getEventFullThisUser(Long userId, Long eventId) {
+    public EventFullDto getEventFullThisUser(Long userId, Long eventId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         log.info("Пользователь с таким Id не найден");
@@ -104,7 +98,7 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFulDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
+    public EventFullDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         /*userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));*/
         //log.info("Пользователь с таким Id не найден");
@@ -169,8 +163,8 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
-                                                  String rangeStart, String rangeEnd, int from, int size) {
+    public List<EventFullDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
+                                                   String rangeStart, String rangeEnd, int from, int size) {
         LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
         LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
 
@@ -225,7 +219,7 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFulDto updateEvent(Long eventId, EventShortDto eventShortDto) {
+    public EventFullDto updateEvent(Long eventId, EventShortDto eventShortDto) {
 
         //дописать логику
         return null;
@@ -233,9 +227,9 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public List<EventFulDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
-                                                         String rangeStart, String rangeEnd,
-                                                         Boolean onlyAvailable, String sort, int from, int size) {
+    public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
+                                                          String rangeStart, String rangeEnd,
+                                                          Boolean onlyAvailable, String sort, int from, int size) {
         LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
         LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
 

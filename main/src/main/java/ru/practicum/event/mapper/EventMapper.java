@@ -3,8 +3,7 @@ package ru.practicum.event.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.category.mapper.CategoryMapper;
-import ru.practicum.category.repository.CategoriesRepository;
-import ru.practicum.event.dto.EventFulDto;
+import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
@@ -42,24 +41,24 @@ public final class EventMapper {
         );
     }
 
-    public static Event toEvent(EventFulDto eventFulDto) {
+    public static Event toEvent(EventFullDto eventFullDto) {
         return new Event(
-                eventFulDto.getId(),
-                eventFulDto.getAnnotation(),
-                CategoryMapper.toCategory(eventFulDto.getCategory()),
-                eventFulDto.getConfirmedRequests(),
-                LocalDateTime.parse(eventFulDto.getCreatedOn(), FORMATTER),
-                eventFulDto.getDescription(),
-                LocalDateTime.parse(eventFulDto.getEventDate(), FORMATTER),
-                UserMapper.toUser(eventFulDto.getInitiator()),
-                eventFulDto.getLocation(),
-                eventFulDto.getPaid(),
-                eventFulDto.getParticipantLimit(),
-                LocalDateTime.parse(eventFulDto.getPublishedOn(), FORMATTER),
-                eventFulDto.getRequestModeration(),
-                eventFulDto.getState(),
-                eventFulDto.getTitle(),
-                eventFulDto.getViews()
+                eventFullDto.getId(),
+                eventFullDto.getAnnotation(),
+                CategoryMapper.toCategory(eventFullDto.getCategory()),
+                eventFullDto.getConfirmedRequests(),
+                LocalDateTime.parse(eventFullDto.getCreatedOn(), FORMATTER),
+                eventFullDto.getDescription(),
+                LocalDateTime.parse(eventFullDto.getEventDate(), FORMATTER),
+                UserMapper.toUser(eventFullDto.getInitiator()),
+                eventFullDto.getLocation(),
+                eventFullDto.getPaid(),
+                eventFullDto.getParticipantLimit(),
+                LocalDateTime.parse(eventFullDto.getPublishedOn(), FORMATTER),
+                eventFullDto.getRequestModeration(),
+                eventFullDto.getState(),
+                eventFullDto.getTitle(),
+                eventFullDto.getViews()
         );
     }
 
@@ -85,8 +84,8 @@ public final class EventMapper {
         );
     }
 
-    public static EventFulDto toEventFulDto(NewEventDto newEventDto) {
-        return new EventFulDto(
+    public static EventFullDto toEventFulDto(NewEventDto newEventDto) {
+        return new EventFullDto(
                 null,
                 newEventDto.getAnnotation(),
                 null,
@@ -120,8 +119,14 @@ public final class EventMapper {
         );
     }
 
-    public static EventFulDto toEventFulDto(Event event) {
-        return new EventFulDto(
+    public static EventFullDto toEventFulDto(Event event) {
+        String dateTimeString;
+        if (event.getPublishedOn() == null) {
+            dateTimeString = "";
+        } else {
+            dateTimeString = event.getPublishedOn().format(FORMATTER);
+        }
+        return new EventFullDto(
                 event.getId(),
                 event.getAnnotation(),
                 CategoryMapper.toCategoryDto(event.getCategory()),
@@ -134,6 +139,7 @@ public final class EventMapper {
                 event.getPaid(),
                 event.getParticipantLimit(),
                 event.getPublishedOn().format(FORMATTER),
+                //dateTimeString,
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),
@@ -141,10 +147,10 @@ public final class EventMapper {
         );
     }
 
-    public static List<Event> toEventFromEventFulDto(Iterable<EventFulDto> eventsFulDto) {
+    public static List<Event> toEventFromEventFulDto(Iterable<EventFullDto> eventsFulDto) {
         List<Event> eventList = new ArrayList<>();
-        for (EventFulDto eventFulDto : eventsFulDto) {
-            eventList.add(toEvent(eventFulDto));
+        for (EventFullDto eventFullDto : eventsFulDto) {
+            eventList.add(toEvent(eventFullDto));
         }
         return eventList;
     }
@@ -165,8 +171,8 @@ public final class EventMapper {
         return eventShortDtoList;
     }
 
-    public static List<EventFulDto> toEventFulDto(Iterable<Event> events) {
-        List<EventFulDto> eventFulDtoList = new ArrayList<>();
+    public static List<EventFullDto> toEventFulDto(Iterable<Event> events) {
+        List<EventFullDto> eventFulDtoList = new ArrayList<>();
         for (Event event : events) {
             eventFulDtoList.add(toEventFulDto(event));
         }

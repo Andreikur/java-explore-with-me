@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.service.EventService;
+import ru.practicum.location.model.Location;
+import ru.practicum.location.service.LocationService;
 import ru.practicum.request.dto.RequestDto;
 import ru.practicum.request.dto.RequestUpdateDto;
 import ru.practicum.request.service.RequestService;
@@ -13,7 +15,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +22,7 @@ import java.util.Map;
 public class PrivateEventController {
     private final EventService eventService;
     private final RequestService requestService;
+    private final LocationService locationService;
 
     /**
      * Получение событий добавленных текущим пользователем
@@ -42,10 +44,11 @@ public class PrivateEventController {
      * @return
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public EventFulDto addEvent(@PathVariable Long userId,
-                                @Valid @RequestBody NewEventDto newEventDto) {
-        return eventService.addEvent(userId, newEventDto);
+    //@ResponseStatus(HttpStatus.CREATED)
+    public EventFullDto addEvent(@PathVariable Long userId,
+                                 @Valid @RequestBody NewEventDto newEventDto) {
+        Location location = locationService.addLocationForEvent(newEventDto.getLocation());
+        return eventService.addEvent(userId, newEventDto, location);
     }
 
     /**
@@ -56,8 +59,8 @@ public class PrivateEventController {
      */
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFulDto getEventFullThisUser(@PathVariable Long userId,
-                                            @PathVariable Long eventId) {
+    public EventFullDto getEventFullThisUser(@PathVariable Long userId,
+                                             @PathVariable Long eventId) {
         return eventService.getEventFullThisUser(userId, eventId);
     }
 
@@ -70,9 +73,9 @@ public class PrivateEventController {
      */
     @PatchMapping("/{eventId}")
     //@ResponseStatus(HttpStatus.OK)
-    public EventFulDto updateEventThisUser(@PathVariable Long userId,
-                                           @PathVariable Long eventId,
-                                           @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+    public EventFullDto updateEventThisUser(@PathVariable Long userId,
+                                            @PathVariable Long eventId,
+                                            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         return eventService.updateEventThisUser(userId, eventId, updateEventUserRequest);
     }
 

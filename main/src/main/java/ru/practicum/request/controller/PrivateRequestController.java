@@ -36,9 +36,10 @@ public class PrivateRequestController {
     /**
      * добавление запроса от текущего пользователя на участие в событии
      * @param userId
-     * @param requestDto
+     * @param eventId
      * @return
      */
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     private RequestDto addRequest(@PathVariable Long userId,

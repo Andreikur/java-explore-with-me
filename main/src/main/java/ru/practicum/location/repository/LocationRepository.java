@@ -6,4 +6,5 @@ import ru.practicum.location.model.Location;
 
 @RepositoryRestResource(path = "locationRepository")
 public interface LocationRepository  extends JpaRepository<Location, Long> {
+
 }
