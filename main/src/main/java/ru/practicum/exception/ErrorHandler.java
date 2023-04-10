@@ -3,6 +3,7 @@ package ru.practicum.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,7 +27,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEmailNotUniqueException(final MailNotUniqueException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
@@ -34,7 +35,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleRequestAlreadyConfirmedException(final RequestAlreadyConfirmedException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
@@ -42,7 +43,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleParticipantLimitException(final ParticipantLimitException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
@@ -50,7 +51,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleBadRequestException(final BadRequestException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
@@ -58,7 +59,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleRequestAlreadyExistsException(final RequestAlreadyExistsException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
@@ -66,8 +67,24 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEventIsNotPublishedException(final EventIsNotPublishedException exception) {
         log.info("{409}", exception.getMessage(), exception);
-        return new ErrorResponse(exception.getMessage(), "Integrity constraint has been violated.",
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorResponse handleAlreadyPublishedException(final EventIsPublishedException exception) {
+        log.info("{409}", exception.getMessage(), exception);
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorResponse handleWrongTimeOfEventException(final WrongTimeException exception) {
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
 
     @ExceptionHandler

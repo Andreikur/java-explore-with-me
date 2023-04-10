@@ -3,8 +3,10 @@ package ru.practicum.event.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.repository.CategoriesRepository;
 import ru.practicum.event.dto.EventFulDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.mapper.UserMapper;
 
@@ -58,6 +60,50 @@ public final class EventMapper {
                 eventFulDto.getState(),
                 eventFulDto.getTitle(),
                 eventFulDto.getViews()
+        );
+    }
+
+    public static Event toEvent(NewEventDto newEventDto) {
+        return new Event(
+                newEventDto.getId(),
+                newEventDto.getAnnotation(),
+                null,
+                null,
+                null,
+                newEventDto.getDescription(),
+                LocalDateTime.parse(newEventDto.getEventDate(),FORMATTER),
+                null,
+                //newEventDto.getLocation(),
+                null,
+                newEventDto.getPaid(),
+                newEventDto.getParticipantLimit(),
+                null,
+                newEventDto.getRequestModeration(),
+                null,
+                newEventDto.getTitle(),
+                null
+        );
+    }
+
+    public static EventFulDto toEventFulDto(NewEventDto newEventDto) {
+        return new EventFulDto(
+                null,
+                newEventDto.getAnnotation(),
+                null,
+                null,
+                null,
+                newEventDto.getDescription(),
+                newEventDto.getEventDate(),
+                null,
+                //newEventDto.getLocation(),
+                null,
+                newEventDto.getPaid(),
+                newEventDto.getParticipantLimit(),
+                null,
+                newEventDto.getRequestModeration(),
+                null,
+                newEventDto.getTitle(),
+                null
         );
     }
 

@@ -3,10 +3,7 @@ package ru.practicum.event.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.dto.EventFulDto;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.dto.RequestStatusUpdateResult;
-import ru.practicum.event.dto.UpdateEventUserRequest;
+import ru.practicum.event.dto.*;
 import ru.practicum.event.service.EventService;
 import ru.practicum.request.dto.RequestDto;
 import ru.practicum.request.dto.RequestUpdateDto;
@@ -16,6 +13,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -46,8 +44,8 @@ public class PrivateEventController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFulDto addEvent(@PathVariable Long userId,
-                                @Valid @RequestBody EventFulDto eventFulDto) {
-        return eventService.addEvent(userId, eventFulDto);
+                                @Valid @RequestBody NewEventDto newEventDto) {
+        return eventService.addEvent(userId, newEventDto);
     }
 
     /**
@@ -71,7 +69,7 @@ public class PrivateEventController {
      * @return
      */
     @PatchMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
+    //@ResponseStatus(HttpStatus.OK)
     public EventFulDto updateEventThisUser(@PathVariable Long userId,
                                            @PathVariable Long eventId,
                                            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {

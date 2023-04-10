@@ -6,14 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.category.mapper.CategoryMapper;
+import ru.practicum.category.model.Category;
+import ru.practicum.category.repository.CategoriesRepository;
 import ru.practicum.enums.SortValue;
+import ru.practicum.enums.State;
+import ru.practicum.enums.StateActionForUser;
 import ru.practicum.event.dto.EventFulDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
+import ru.practicum.exception.EventIsPublishedException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.WrongTimeException;
+import ru.practicum.location.mapper.LocationMapper;
+import ru.practicum.location.model.Location;
+import ru.practicum.location.repository.LocationRepository;
+import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
@@ -31,12 +43,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EntityManager entityManager;
     private final UserRepository userRepository;
+    private final CategoriesRepository categoriesRepository;
+    private final LocationRepository locationRepository;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional(readOnly = true)
@@ -54,13 +68,26 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFulDto addEvent(Long userId, EventFulDto eventFulDto) {
+    public EventFulDto addEvent(Long userId, NewEventDto newEventDto) {
+        Category category = categoriesRepository.findById(newEventDto.getCategory())
+                .orElseThrow(() -> new NotFoundException(""));
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        log.info("Пользователь с таким Id не найден");
-        Event event = eventRepository.save(EventMapper.toEvent(eventFulDto));
+        //Event event = EventMapper.toEvent(newEventDto);
+        Location location = locationRepository.save(LocationMapper.toLocation(newEventDto.getLocation()));
+        LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
+
+        if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
+            throw new WrongTimeException("Дата должна быть в будущем");
+        }
+        Event event = EventMapper.toEvent(newEventDto);
+        event.setLocation(location);        //????
+        event.setConfirmedRequests(0L);
         event.setInitiator(user);
-        return EventMapper.toEventFulDto(event);
+        event.setCategory(category);
+        EventFulDto eventFulDto = EventMapper.toEventFulDto(eventRepository.save(event));
+        return eventFulDto;
+        //return EventMapper.toEventFulDto(event);
     }
 
     @Transactional(readOnly = true)
@@ -78,24 +105,69 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public EventFulDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
-        userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        log.info("Пользователь с таким Id не найден");
+        /*userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь с таким Id не найден")));*/
+        //log.info("Пользователь с таким Id не найден");
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Событие с таким Id не найдено")));
         //добавить логику
         //
-        //
-        //
-        //
+        if (event.getPublishedOn() != null) {
+            throw new EventIsPublishedException("Событие уже опубликовано");
+        }
 
+        if (updateEventUserRequest == null) {
+            return EventMapper.toEventFulDto(event);
+        }
 
+        if (updateEventUserRequest.getAnnotation() != null) {
+            event.setAnnotation(updateEventUserRequest.getAnnotation());
+        }
+        if (updateEventUserRequest.getCategory() != null) {
+            Category category = categoriesRepository.findById(updateEventUserRequest.getCategory()).orElseThrow(() ->
+                    new NotFoundException("Категория не найдена"));
+            event.setCategory(category);
+        }
+        if (updateEventUserRequest.getDescription() != null) {
+            event.setDescription(updateEventUserRequest.getDescription());
+        }
+        if (updateEventUserRequest.getEventDate() != null) {
+            LocalDateTime eventDateTime = updateEventUserRequest.getEventDate();
+            if (eventDateTime.isBefore(LocalDateTime.now().plusHours(2))) {
+                throw new WrongTimeException("Время начала данного мероприятия, составляет менее одного часа с даты публикации.");
+            }
+            event.setEventDate(updateEventUserRequest.getEventDate());
+        }
+        if (updateEventUserRequest.getLocation() != null) {
+            event.setLocation(updateEventUserRequest.getLocation());
+        }
+        if (updateEventUserRequest.getPaid() != null) {
+            event.setPaid(updateEventUserRequest.getPaid());
+        }
+        if (updateEventUserRequest.getParticipantLimit() != null) {
+            event.setParticipantLimit(updateEventUserRequest.getParticipantLimit().intValue());
+        }
+        if (updateEventUserRequest.getRequestModeration() != null) {
+            event.setRequestModeration(updateEventUserRequest.getRequestModeration());
+        }
+        if (updateEventUserRequest.getTitle() != null) {
+            event.setTitle(updateEventUserRequest.getTitle());
+        }
 
+        if (updateEventUserRequest.getState() != null) {
+            if (updateEventUserRequest.getState().equals(StateActionForUser.SEND_TO_REVIEW)) {
+                event.setState(State.PENDING);
+            } else {
+                event.setState(State.CANCELED);
+            }
+        }
 
         return EventMapper.toEventFulDto(event);
+
+        //return EventMapper.toEventFulDto(event);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<EventFulDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
                                                   String rangeStart, String rangeEnd, int from, int size) {
