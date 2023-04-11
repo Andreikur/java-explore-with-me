@@ -122,7 +122,7 @@ public final class EventMapper {
     public static EventFullDto toEventFulDto(Event event) {
         String dateTimeString;
         if (event.getPublishedOn() == null) {
-            dateTimeString = "";
+            dateTimeString = null;
         } else {
             dateTimeString = event.getPublishedOn().format(FORMATTER);
         }
@@ -138,8 +138,8 @@ public final class EventMapper {
                 event.getLocation(),
                 event.getPaid(),
                 event.getParticipantLimit(),
-                event.getPublishedOn().format(FORMATTER),
-                //dateTimeString,
+                //event.getPublishedOn().format(FORMATTER),
+                dateTimeString,
                 event.getRequestModeration(),
                 event.getState(),
                 event.getTitle(),

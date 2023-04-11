@@ -1,9 +1,6 @@
 package ru.practicum.event.service;
 
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.dto.NewEventDto;
-import ru.practicum.event.dto.UpdateEventUserRequest;
+import ru.practicum.event.dto.*;
 import ru.practicum.location.model.Location;
 
 import java.util.List;
@@ -15,7 +12,7 @@ public interface EventService {
     EventFullDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest);
     List<EventFullDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
                                             String rangeStart, String rangeEnd, int from, int size);
-    EventFullDto updateEvent(Long eventId, EventShortDto eventShortDto);
+    EventFullDto updateEvent(Long eventId, UpdateEventAdminDto updateEventAdminDto);
     List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, String rangeStart,
                                                    String rangeEnd, Boolean onlyAvailable, String sort, int from, int size);
 

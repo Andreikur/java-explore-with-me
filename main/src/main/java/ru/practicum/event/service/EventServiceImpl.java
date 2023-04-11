@@ -10,11 +10,9 @@ import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoriesRepository;
 import ru.practicum.enums.SortValue;
 import ru.practicum.enums.State;
+import ru.practicum.enums.StateActionForAdmin;
 import ru.practicum.enums.StateActionForUser;
-import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventShortDto;
-import ru.practicum.event.dto.NewEventDto;
-import ru.practicum.event.dto.UpdateEventUserRequest;
+import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
@@ -79,7 +77,7 @@ public class EventServiceImpl implements EventService {
         event.setCategory(category);
         event.setViews(0L);
         event.setLocation(location);
-        event.setPublishedOn(LocalDateTime.now());
+        //event.setPublishedOn(LocalDateTime.now());
         EventFullDto eventFullDto = EventMapper.toEventFulDto(eventRepository.save(event));
         return eventFullDto;
     }
@@ -219,10 +217,67 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFullDto updateEvent(Long eventId, EventShortDto eventShortDto) {
+    public EventFullDto updateEvent(Long eventId, UpdateEventAdminDto updateEventAdminDto) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new NotFoundException(String.format("Событие с таким Id отсутсвует")));
+        if (updateEventAdminDto == null) {
+            return EventMapper.toEventFulDto(event);
+        }
 
-        //дописать логику
-        return null;
+        if (updateEventAdminDto.getAnnotation() != null) {
+            event.setAnnotation(updateEventAdminDto.getAnnotation());
+        }
+        if (updateEventAdminDto.getCategory() != null) {
+            Category category = categoriesRepository.findById(updateEventAdminDto.getCategory()).orElseThrow(() ->
+                    new NotFoundException("Категория с таким Id отсутствует"));
+            event.setCategory(category);
+        }
+        if (updateEventAdminDto.getDescription() != null) {
+            event.setDescription(updateEventAdminDto.getDescription());
+        }
+        if (updateEventAdminDto.getLocation() != null) {
+            event.setLocation(updateEventAdminDto.getLocation());
+        }
+        if (updateEventAdminDto.getPaid() != null) {
+            event.setPaid(updateEventAdminDto.getPaid());
+        }
+        if (updateEventAdminDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(updateEventAdminDto.getParticipantLimit().intValue());
+        }
+        if (updateEventAdminDto.getRequestModeration() != null) {
+            event.setRequestModeration(updateEventAdminDto.getRequestModeration());
+        }
+        if (updateEventAdminDto.getTitle() != null) {
+            event.setTitle(updateEventAdminDto.getTitle());
+        }
+        if (updateEventAdminDto.getStateAction() != null) {
+            if (updateEventAdminDto.getStateAction().equals(StateActionForAdmin.PUBLISH_EVENT)) {
+                if (event.getPublishedOn() != null) {
+                    throw new EventIsPublishedException("Событие уже опубликовано");
+                }
+                if (event.getState().equals(State.CANCELED)) {
+                    throw new EventIsPublishedException("Событие уже отменено");
+                }
+                event.setState(State.PUBLISHED);
+                event.setPublishedOn(LocalDateTime.now());
+            } else if (updateEventAdminDto.getStateAction().equals(StateActionForAdmin.REJECT_EVENT)) {
+                if (event.getPublishedOn() != null) {
+                    throw new EventIsPublishedException("Событие уже опубликованоd");
+                }
+                event.setState(State.CANCELED);
+            }
+        }
+        if (updateEventAdminDto.getEventDate() != null) {
+            LocalDateTime eventDateTime = updateEventAdminDto.getEventDate();
+            if (eventDateTime.isBefore(LocalDateTime.now())
+                    || eventDateTime.isBefore(event.getPublishedOn().plusHours(1))) {
+                throw new WrongTimeException("The start date of the event to be modified is less than one hour from the publication date.");
+            }
+
+            event.setEventDate(updateEventAdminDto.getEventDate());
+        }
+
+        return EventMapper.toEventFulDto(eventRepository.save(event));
     }
 
     @Transactional

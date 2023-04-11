@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.UpdateEventAdminDto;
 import ru.practicum.event.service.EventService;
 
 import javax.validation.Valid;
@@ -35,7 +36,8 @@ public class AdminEventController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto updateEvent(@PathVariable Long eventId, @Valid @RequestBody EventShortDto eventShortDto) {
-        return eventService.updateEvent(eventId, eventShortDto);
+    public EventFullDto updateEvent(@PathVariable Long eventId,
+                                    @Valid @RequestBody UpdateEventAdminDto updateEventAdminDto) {
+        return eventService.updateEvent(eventId, updateEventAdminDto);
     }
 }
