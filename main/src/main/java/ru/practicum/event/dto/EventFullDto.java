@@ -10,6 +10,8 @@ import ru.practicum.enums.State;
 import ru.practicum.location.model.Location;
 import ru.practicum.user.dto.UserShortDto;
 
+import javax.validation.constraints.Future;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

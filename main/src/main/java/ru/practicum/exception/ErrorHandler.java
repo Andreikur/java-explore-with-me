@@ -1,6 +1,7 @@
 package ru.practicum.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -83,6 +84,21 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ErrorResponse handleWrongTimeOfEventException(final WrongTimeException exception) {
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorResponse handleCategoryUsedException(final CategoryUsedException exception) {
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleAlreadyExistException(final DataIntegrityViolationException exception) {
         return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }

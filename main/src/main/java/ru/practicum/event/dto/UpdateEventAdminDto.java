@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.enums.StateActionForAdmin;
 import ru.practicum.location.model.Location;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ public class UpdateEventAdminDto {
     private Long category;
     private String description;
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Pattern.DATE)
-    private LocalDateTime eventDate;
+    private String eventDate;
     private Location location;
     private Boolean paid;
     private Long participantLimit;

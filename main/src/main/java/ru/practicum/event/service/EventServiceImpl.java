@@ -97,9 +97,8 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public EventFullDto updateEventThisUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
-        /*userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(String.format("Пользователь с таким Id не найден")));*/
-        //log.info("Пользователь с таким Id не найден");
+        userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь с таким Id не найден")));
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Событие с таким Id не найдено")));
         //добавить логику
@@ -146,8 +145,8 @@ public class EventServiceImpl implements EventService {
             event.setTitle(updateEventUserRequest.getTitle());
         }
 
-        if (updateEventUserRequest.getState() != null) {
-            if (updateEventUserRequest.getState().equals(StateActionForUser.SEND_TO_REVIEW)) {
+        if (updateEventUserRequest.getStateAction() != null) {
+            if (updateEventUserRequest.getStateAction().equals(StateActionForUser.SEND_TO_REVIEW)) {
                 event.setState(State.PENDING);
             } else {
                 event.setState(State.CANCELED);
@@ -262,19 +261,19 @@ public class EventServiceImpl implements EventService {
                 event.setPublishedOn(LocalDateTime.now());
             } else if (updateEventAdminDto.getStateAction().equals(StateActionForAdmin.REJECT_EVENT)) {
                 if (event.getPublishedOn() != null) {
-                    throw new EventIsPublishedException("Событие уже опубликованоd");
+                    throw new EventIsPublishedException("Событие уже опубликовано");
                 }
                 event.setState(State.CANCELED);
             }
         }
         if (updateEventAdminDto.getEventDate() != null) {
-            LocalDateTime eventDateTime = updateEventAdminDto.getEventDate();
+            LocalDateTime eventDateTime = LocalDateTime.parse(updateEventAdminDto.getEventDate(), FORMATTER);
             if (eventDateTime.isBefore(LocalDateTime.now())
                     || eventDateTime.isBefore(event.getPublishedOn().plusHours(1))) {
-                throw new WrongTimeException("The start date of the event to be modified is less than one hour from the publication date.");
+                throw new WrongTimeException("Дата начала мероприятия, которое должно быть изменено, составляет менее одного часа с даты публикации.");
             }
 
-            event.setEventDate(updateEventAdminDto.getEventDate());
+            event.setEventDate(eventDateTime);
         }
 
         return EventMapper.toEventFulDto(eventRepository.save(event));

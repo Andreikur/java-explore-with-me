@@ -8,6 +8,7 @@ import ru.practicum.location.model.Location;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -31,6 +32,7 @@ public class Event {
     private LocalDateTime createdOn;
     private String description;
     @Column(name = "event_date")
+    //@Future
     private LocalDateTime eventDate;
     @OneToOne
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
