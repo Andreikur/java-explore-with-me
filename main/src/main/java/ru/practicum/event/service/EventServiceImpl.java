@@ -20,6 +20,7 @@ import ru.practicum.exception.EventIsPublishedException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.WrongTimeException;
 import ru.practicum.location.model.Location;
+import ru.practicum.location.repository.LocationRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
@@ -44,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final CategoriesRepository categoriesRepository;
+    private final LocationRepository locationRepository;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional(readOnly = true)
@@ -51,12 +53,20 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getEventThisUser(Long userId, int from, int size) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        log.info("Пользователь с таким Id не найден");
+        //log.info("Пользователь с таким Id не найден");
         List<Event> eventList = new ArrayList<>();
         int page = from/size;
         PageRequest pageRequest = PageRequest.of(page, size);
         eventList.addAll(eventRepository.findAllEventThisUserPage(userId, pageRequest));
         return EventMapper.toEventShortDto(eventList);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public EventFullDto getEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new NotFoundException(String.format("Пользователь с таким Id не найден")));
+        return EventMapper.toEventFulDto(event);
     }
 
     @Transactional
@@ -101,8 +111,7 @@ public class EventServiceImpl implements EventService {
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Событие с таким Id не найдено")));
-        //добавить логику
-        //
+
         if (event.getPublishedOn() != null) {
             throw new EventIsPublishedException("Событие уже опубликовано");
         }
@@ -123,11 +132,11 @@ public class EventServiceImpl implements EventService {
             event.setDescription(updateEventUserRequest.getDescription());
         }
         if (updateEventUserRequest.getEventDate() != null) {
-            LocalDateTime eventDateTime = updateEventUserRequest.getEventDate();
+            LocalDateTime eventDateTime = LocalDateTime.parse(updateEventUserRequest.getEventDate(), FORMATTER);
             if (eventDateTime.isBefore(LocalDateTime.now().plusHours(2))) {
                 throw new WrongTimeException("Время начала данного мероприятия, составляет менее одного часа с даты публикации.");
             }
-            event.setEventDate(updateEventUserRequest.getEventDate());
+            event.setEventDate(eventDateTime);
         }
         if (updateEventUserRequest.getLocation() != null) {
             event.setLocation(updateEventUserRequest.getLocation());
@@ -160,7 +169,7 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<EventFullDto> getEventsByCondition(List<Long> users, List<String> states, List<Long> categories,
+    public List<EventFullDto> getEventsByCondition(List<Long> users, State states, List<Long> categories,
                                                    String rangeStart, String rangeEnd, int from, int size) {
         LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
         LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
@@ -211,7 +220,6 @@ public class EventServiceImpl implements EventService {
 
         //
         return EventMapper.toEventFulDto(events);
-        //return EventMapper.toEventFulDto(eventList);
     }
 
     @Transactional
@@ -222,6 +230,8 @@ public class EventServiceImpl implements EventService {
         if (updateEventAdminDto == null) {
             return EventMapper.toEventFulDto(event);
         }
+
+
 
         if (updateEventAdminDto.getAnnotation() != null) {
             event.setAnnotation(updateEventAdminDto.getAnnotation());
@@ -235,7 +245,9 @@ public class EventServiceImpl implements EventService {
             event.setDescription(updateEventAdminDto.getDescription());
         }
         if (updateEventAdminDto.getLocation() != null) {
-            event.setLocation(updateEventAdminDto.getLocation());
+            Location location = updateEventAdminDto.getLocation();
+            locationRepository.save(location);
+            event.setLocation(location);
         }
         if (updateEventAdminDto.getPaid() != null) {
             event.setPaid(updateEventAdminDto.getPaid());

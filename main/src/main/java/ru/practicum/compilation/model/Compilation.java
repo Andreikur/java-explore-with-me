@@ -4,6 +4,7 @@ import lombok.*;
 import ru.practicum.event.model.Event;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,7 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean pinned;
+    @NotBlank
     private String title;
     @ManyToMany
     @JoinTable(name = "compilations_events",

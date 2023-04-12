@@ -44,7 +44,7 @@ public class PrivateEventController {
      * @return
      */
     @PostMapping
-    //@ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable Long userId,
                                  @Valid @RequestBody NewEventDto newEventDto) {
         Location location = locationService.addLocationForEvent(newEventDto.getLocation());

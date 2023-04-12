@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilation.dto.CompilationDto;
+import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.service.CompilationService;
 
 import javax.validation.Valid;
@@ -16,13 +17,19 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addUser(@Valid @RequestBody CompilationDto compilationDto) {
-        return compilationService.addCompilation(compilationDto);
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
+        return compilationService.addCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeUser(@PathVariable Long compId) {
+    public void removeCompilation(@PathVariable Long compId) {
         compilationService.removeCompilation(compId);
+    }
+
+    @PatchMapping("/{compId}")
+    public CompilationDto updateCompilation(@PathVariable Long compId,
+                                            @Valid @RequestBody NewCompilationDto newCompilationDto) {
+       return compilationService.updateCompilation(compId, newCompilationDto);
     }
 }

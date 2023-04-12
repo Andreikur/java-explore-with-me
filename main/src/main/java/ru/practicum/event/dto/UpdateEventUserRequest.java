@@ -18,7 +18,7 @@ public class UpdateEventUserRequest {
     private String annotation;
     private Long category;
     private String description;
-    private LocalDateTime eventDate;           //(в формате "yyyy-MM-dd HH:mm:ss")
+    private String eventDate;           //(в формате "yyyy-MM-dd HH:mm:ss")
     private Location location;
     private Boolean paid;               //оплачиваемый?
     private Integer participantLimit;
