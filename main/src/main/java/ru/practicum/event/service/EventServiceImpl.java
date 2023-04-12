@@ -341,7 +341,9 @@ public class EventServiceImpl implements EventService {
                 .getResultList();
 
         if (sort != null) {
-            if (sort.equals(SortValue.EVENT_DATE)) {
+
+            SortValue thisSortValue = SortValue.valueOf(sort);
+            if (thisSortValue.equals(SortValue.EVENT_DATE)) {
                 events = events.stream().sorted(Comparator.comparing(Event::getEventDate)).collect(Collectors.toList());
             } else {
                 events = events.stream().sorted(Comparator.comparing(Event::getViews)).collect(Collectors.toList());
