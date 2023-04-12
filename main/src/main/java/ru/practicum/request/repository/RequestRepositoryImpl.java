@@ -1,7 +1,6 @@
 package ru.practicum.request.repository;
 
 import org.springframework.context.annotation.Lazy;
-import ru.practicum.request.repository.RequestRepository;
 
 public class RequestRepositoryImpl {
     public final RequestRepository requestRepository;

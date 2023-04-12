@@ -16,8 +16,6 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.BadRequestException;
 import ru.practicum.exception.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
