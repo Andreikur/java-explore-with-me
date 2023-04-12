@@ -15,12 +15,18 @@ import ru.practicum.endpointHit.mapper.EndpointHitMapper;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EndpointHitServiceImpl implements EndpointHitService  {
-    private  final EndpointHitRepository endpointHitRepository;
+    private final EndpointHitRepository endpointHitRepository;
 
     @Transactional
     @Override
     public EndpointHitDto addEndpointHit(EndpointHitDto endpointHitDto) {
         EndpointHit endpointHit = endpointHitRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
         return EndpointHitMapper.toEndpointHitDto(endpointHit);
+    }
+
+    @Transactional
+    @Override
+    public void addEndpointHitEvent(EndpointHitDto endpointHitDto) {
+        endpointHitRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
     }
 }

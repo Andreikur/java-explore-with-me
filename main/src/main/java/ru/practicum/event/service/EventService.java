@@ -4,6 +4,7 @@ import ru.practicum.enums.State;
 import ru.practicum.event.dto.*;
 import ru.practicum.location.model.Location;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
@@ -22,7 +23,7 @@ public interface EventService {
 
     List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid, String rangeStart,
                                                    String rangeEnd, Boolean onlyAvailable, String sort,
-                                                   int from, int size);
+                                                   int from, int size, HttpServletRequest request);
 
     EventFullDto getEvent(Long eventId);
 

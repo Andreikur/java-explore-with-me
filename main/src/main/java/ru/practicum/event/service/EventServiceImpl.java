@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoriesRepository;
+import ru.practicum.endpointHit.EndpointHitDto;
+import ru.practicum.endpointHit.service.EndpointHitService;
 import ru.practicum.enums.SortValue;
 import ru.practicum.enums.State;
 import ru.practicum.enums.StateActionForAdmin;
@@ -23,17 +25,18 @@ import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
+import ru.practicum.viewStats.ViewStatsDto;
+import ru.practicum.viewStats.service.ViewStatsService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,6 +48,8 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoriesRepository categoriesRepository;
     private final LocationRepository locationRepository;
+    private final ViewStatsService viewStatsService;
+    private final EndpointHitService endpointHitService;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Transactional(readOnly = true)
@@ -59,11 +64,14 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventShortDto(eventList);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional//(readOnly = true)
     @Override
     public EventFullDto getEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
+        saveEndpoint(event);
+        //setView(event);
+        //sendStat(event, request);
         return EventMapper.toEventFulDto(event);
     }
 
@@ -290,7 +298,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
                                                           String rangeStart, String rangeEnd,
-                                                          Boolean onlyAvailable, String sort, int from, int size) {
+                                                          Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest request) {
         LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
         LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
 
@@ -352,8 +360,107 @@ public class EventServiceImpl implements EventService {
 
         //Дописать увеличение просмотров
 
-        //setView(events);
-        //sendStat(events, request);
+        setView(events);
+        sendStat(events, request);
         return EventMapper.toEventFulDto(events);
+    }
+    public void sendStat(Event event, HttpServletRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+        String remoteAddr = request.getRemoteAddr();
+        String nameService = "main-service";
+
+        EndpointHitDto requestDto = new EndpointHitDto();
+        requestDto.setTimestamp(LocalDateTime.now());
+        requestDto.setUri("/events");
+        requestDto.setApp(nameService);
+        requestDto.setIp(remoteAddr);
+        endpointHitService.addEndpointHit(requestDto);
+        sendStatForTheEvent(event.getId(), remoteAddr, now, nameService);
+    }
+
+    public void sendStat(List<Event> events, HttpServletRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+        String remoteAddr = request.getRemoteAddr();
+        String nameService = "main-service";
+
+        EndpointHitDto requestDto = new EndpointHitDto();
+        requestDto.setTimestamp(LocalDateTime.now());
+        requestDto.setUri("/events");
+        requestDto.setApp(nameService);
+        requestDto.setIp(request.getRemoteAddr());
+        endpointHitService.addEndpointHit(requestDto);
+        sendStatForEveryEvent(events, remoteAddr, LocalDateTime.now(), nameService);
+    }
+
+    private void sendStatForTheEvent(Long eventId, String remoteAddr, LocalDateTime now,
+                                     String nameService) {
+        EndpointHitDto requestDto = new EndpointHitDto();
+        requestDto.setTimestamp(LocalDateTime.now());
+        requestDto.setUri("/events/" + eventId);
+        requestDto.setApp(nameService);
+        requestDto.setIp(remoteAddr);
+        endpointHitService.addEndpointHit(requestDto);
+    }
+
+    private void sendStatForEveryEvent(List<Event> events, String remoteAddr, LocalDateTime now,
+                                       String nameService) {
+        for (Event event : events) {
+            EndpointHitDto requestDto = new EndpointHitDto();
+            requestDto.setTimestamp(LocalDateTime.now());
+            requestDto.setUri("/events/" + event.getId());
+            requestDto.setApp(nameService);
+            requestDto.setIp(remoteAddr);
+            endpointHitService.addEndpointHit(requestDto);
+        }
+    }
+
+    public void setView(List<Event> events) {
+        LocalDateTime start = events.get(0).getCreatedOn();
+        List<String> uris = new ArrayList<>();
+        Map<String, Event> eventsUri = new HashMap<>();
+        String uri = "";
+        for (Event event : events) {
+            if (start.isBefore(event.getCreatedOn())) {
+                start = event.getCreatedOn();
+            }
+            uri = "/events/" + event.getId();
+            uris.add(uri);
+            eventsUri.put(uri, event);
+            event.setViews(0L);
+        }
+
+        LocalDateTime startTime = start;
+        LocalDateTime endTime = LocalDateTime.now();
+
+        List<ViewStatsDto> stats = getStats(startTime, endTime, uris);
+        stats.forEach((stat) ->
+                eventsUri.get(stat.getUri()).setViews(stat.getHits()));
+    }
+
+    public void setView(Event event) {
+        LocalDateTime startTime = event.getCreatedOn();
+        LocalDateTime endTime = LocalDateTime.now();
+        List<String> uris = List.of("/events/" + event.getId());
+
+        List<ViewStatsDto> statsList = getStats(startTime, endTime, uris);
+        if (statsList.size() == 1) {
+            event.setViews(statsList.get(0).getHits());
+        } else {
+            event.setViews(0L);
+        }
+    }
+
+    private List<ViewStatsDto> getStats(LocalDateTime startTime, LocalDateTime endTime, List<String> uris) {
+        return viewStatsService.getStats(startTime, endTime, uris, false);
+    }
+
+    public void saveEndpoint(Event event) {
+        LocalDateTime creationTime = LocalDateTime.now();
+        EndpointHitDto endpointHitDto = new EndpointHitDto();
+        endpointHitDto.setApp("ewm-main-service");
+        endpointHitDto.setUri("/events/" + event.getId());
+        endpointHitDto.setIp("0:0:0:0:0:0:0:1");
+        endpointHitDto.setTimestamp(creationTime);
+        endpointHitService.addEndpointHitEvent(endpointHitDto);
     }
 }
