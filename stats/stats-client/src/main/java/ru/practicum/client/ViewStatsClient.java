@@ -1,6 +1,5 @@
  package ru.practicum.client;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class ViewStatsClient extends BaseClient {
         );
     }
 
-    public ResponseEntity <Object> getStats(Long id) {
+    public ResponseEntity<Object> getStats(Long id) {
         return get("/" + id);
     }
 }
