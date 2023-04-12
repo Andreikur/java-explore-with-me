@@ -33,9 +33,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers(List<Long> listId, int from, int size) {
         List<User> userList = new ArrayList<>();
-        int page = from/size;
+        int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        if(listId.isEmpty()) {
+        if (listId.isEmpty()) {
             userList.addAll(userRepository.findAllPage(pageRequest));
         } else {
             userList.addAll(userRepository.findAllById(listId));

@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class ErrorHandler {
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException exception) {
@@ -71,6 +72,7 @@ public class ErrorHandler {
         return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
                 HttpStatus.CONFLICT.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody

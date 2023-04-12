@@ -96,7 +96,7 @@ public class RequestServiceImpl implements RequestService {
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         log.info("Пользователь с таким Id не найден");
         List<Request> requestList = new ArrayList<>();
-        int page = from/size;
+        int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
         requestList.addAll(requestRepository.findAllRequestThisUserPage(userId, pageRequest));
         return RequestMapper.toRequestDto(requestList);

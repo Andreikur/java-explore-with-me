@@ -19,6 +19,7 @@ public class AdminUserController {
 
     /**
      * Добавление нового пользователя
+     *
      * @param userDto
      * @return
      */
@@ -30,6 +31,7 @@ public class AdminUserController {
 
     /**
      * Получение информации о пользователях
+     *
      * @param ids
      * @param from
      * @param size
@@ -37,14 +39,15 @@ public class AdminUserController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsers(@RequestParam(required = false) List <Long> ids,
-                                 @Positive @RequestParam(defaultValue = "0", required = false) int from,
-                                 @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
+    public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
+                                  @Positive @RequestParam(defaultValue = "0", required = false) int from,
+                                  @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
         return userService.getUsers(ids, from, size);
     }
 
     /**
      * Удаление пользователя
+     *
      * @param userId
      */
     @DeleteMapping("/{userId}")

@@ -25,7 +25,7 @@ public final class CategoryMapper {
     }
 
     public static List<Category> toCategory(Iterable<CategoryDto> categoryDtos) {
-        List<Category> categoryList =new ArrayList<>();
+        List<Category> categoryList = new ArrayList<>();
         for (CategoryDto categoryDto : categoryDtos) {
             categoryList.add(toCategory(categoryDto));
         }
@@ -33,7 +33,7 @@ public final class CategoryMapper {
     }
 
     public static List<CategoryDto> toCategoryDto(Iterable<Category> categories) {
-        List<CategoryDto> categoryDtoList =new ArrayList<>();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
         for (Category category : categories) {
             categoryDtoList.add(toCategoryDto(category));
         }

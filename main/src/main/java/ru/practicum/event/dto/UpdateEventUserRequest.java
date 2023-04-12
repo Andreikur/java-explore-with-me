@@ -3,13 +3,8 @@ package ru.practicum.event.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.enums.State;
 import ru.practicum.enums.StateActionForUser;
 import ru.practicum.location.model.Location;
-import ru.practicum.user.dto.UserShortDto;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

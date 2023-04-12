@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.request.dto.RequestDto;
 import ru.practicum.request.model.Request;
-import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RequestMapper {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    public static Request toRequest(RequestDto requestDto){
+
+    public static Request toRequest(RequestDto requestDto) {
         return new Request(
                 requestDto.getId(),
                 LocalDateTime.parse(requestDto.getCreated(), FORMATTER),
@@ -25,7 +24,7 @@ public final class RequestMapper {
         );
     }
 
-    public static RequestDto toRequestDto(Request request){
+    public static RequestDto toRequestDto(Request request) {
         return new RequestDto(
                 request.getId(),
                 request.getCreated().format(FORMATTER),

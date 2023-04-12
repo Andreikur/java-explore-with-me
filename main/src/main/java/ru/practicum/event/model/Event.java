@@ -1,22 +1,18 @@
 package ru.practicum.event.model;
 
 import lombok.*;
-import ru.practicum.category.Pattern;
 import ru.practicum.category.model.Category;
 import ru.practicum.enums.State;
 import ru.practicum.location.model.Location;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "events", schema = "public")
 @Data
-//@AllArgsConstructor
-@NoArgsConstructor//(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,11 +50,6 @@ public class Event {
     private String title;
     private Long views;
 
-    //@Transient
-    //private final String datePattern = Pattern.DATE;
-    //@Transient
-    //private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
-
     public Event(Long id, String annotation, Category category, Long confirmedRequests, LocalDateTime createdOn,
                  String description, LocalDateTime eventDate, User initiator, Location location, Boolean paid,
                  Integer participantLimit, LocalDateTime publishedOn, Boolean requestModeration, State eventState, String title, Long views) {
@@ -91,5 +82,4 @@ public class Event {
         this.title = title;
         this.views = views;
     }
-
 }

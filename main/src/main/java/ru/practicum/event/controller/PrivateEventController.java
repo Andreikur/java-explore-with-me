@@ -26,6 +26,7 @@ public class PrivateEventController {
 
     /**
      * Получение событий добавленных текущим пользователем
+     *
      * @param userId
      * @param from
      * @param size
@@ -37,10 +38,11 @@ public class PrivateEventController {
                                                 @Positive @RequestParam(defaultValue = "0", required = false) int from,
                                                 @PositiveOrZero @RequestParam(defaultValue = "10", required = false) int size) {
         return eventService.getEventThisUser(userId, from, size);
-    };
+    }
 
     /**
      * Добавление нового события
+     *
      * @return
      */
     @PostMapping
@@ -53,6 +55,7 @@ public class PrivateEventController {
 
     /**
      * Получение полной информации о событии добавленном текущим пользователем
+     *
      * @param userId
      * @param eventId
      * @return
@@ -66,6 +69,7 @@ public class PrivateEventController {
 
     /**
      * Изменение события добавленного текущим пользователем
+     *
      * @param userId
      * @param eventId
      * @param updateEventUserRequest
@@ -81,6 +85,7 @@ public class PrivateEventController {
 
     /**
      * Получение информации о запросах на участие в событии текущего пользователя
+     *
      * @param userId
      * @param eventId
      * @return
@@ -88,12 +93,13 @@ public class PrivateEventController {
     @GetMapping("/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public List<RequestDto> getEventThisUserRequest(@PathVariable Long userId,
-                                                     @PathVariable Long eventId) {
+                                                    @PathVariable Long eventId) {
         return requestService.getEventThisUserRequest(userId, eventId);
     }
 
     /**
      * Изменение статуса(подтверждена, отменена) заявок на участие в событии текущего пользователя
+     *
      * @param userId
      * @param eventId
      * @param requestUpdateDto

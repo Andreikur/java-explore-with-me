@@ -25,8 +25,7 @@ public class PublicCategoriesController {
 
     @GetMapping("{catId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoryDto getCategory (@PathVariable Long catId) {
+    public CategoryDto getCategory(@PathVariable Long catId) {
         return categoryService.getCategory(catId);
     }
-
 }

@@ -4,15 +4,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Repository;
 import ru.practicum.enums.State;
 import ru.practicum.event.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@RepositoryRestResource(path = "eventRepository")
-@Repository
+@RepositoryRestResource(path = "eventRepository")
+//@Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT b FROM Event b " +

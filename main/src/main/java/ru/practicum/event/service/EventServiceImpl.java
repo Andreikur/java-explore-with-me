@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-//@Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
@@ -53,9 +52,8 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getEventThisUser(Long userId, int from, int size) {
         userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
-        //log.info("Пользователь с таким Id не найден");
         List<Event> eventList = new ArrayList<>();
-        int page = from/size;
+        int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
         eventList.addAll(eventRepository.findAllEventThisUserPage(userId, pageRequest));
         return EventMapper.toEventShortDto(eventList);
@@ -161,10 +159,7 @@ public class EventServiceImpl implements EventService {
                 event.setState(State.CANCELED);
             }
         }
-
         return EventMapper.toEventFulDto(event);
-
-        //return EventMapper.toEventFulDto(event);
     }
 
     @Transactional(readOnly = true)
@@ -345,12 +340,6 @@ public class EventServiceImpl implements EventService {
                 .setMaxResults(size)
                 .getResultList();
 
-        /*if (onlyAvailable) {
-            events = events.stream()
-                    .filter((event -> event.getConfirmedRequests() < (long) event.getParticipantLimit()))
-                    .collect(Collectors.toList());
-        }*/
-
         if (sort != null) {
             if (sort.equals(SortValue.EVENT_DATE)) {
                 events = events.stream().sorted(Comparator.comparing(Event::getEventDate)).collect(Collectors.toList());
@@ -359,54 +348,10 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        /*if (events.size() == 0) {
-            return new ArrayList<>();
-        }*/
-
         //Дописать увеличение просмотров
 
         //setView(events);
         //sendStat(events, request);
         return EventMapper.toEventFulDto(events);
     }
-
-/*    public void setView(List<Event> events) {
-        LocalDateTime start = events.get(0).getCreatedOn();
-        List<String> uris = new ArrayList<>();
-        Map<String, Event> eventsUri = new HashMap<>();
-        String uri = "";
-        for (Event event : events) {
-            if (start.isBefore(event.getCreatedOn())) {
-                start = event.getCreatedOn();
-            }
-            uri = "/events/" + event.getId();
-            uris.add(uri);
-            eventsUri.put(uri, event);
-            event.setViews(0L);
-        }
-
-        String startTime = start.format(FORMATTER);
-        String endTime = LocalDateTime.now().format(FORMATTER);
-
-        List<ViewStatsDto> statsDtoList = getStats(startTime, endTime, uris);
-        statsDtoList.forEach((stat) ->
-                eventsUri.get(stat.getUri()).setViews(stat.getHits()));
-    }*/
-
-/*    public void setView(Event event) {
-        String startTime = event.getCreatedOn().format(FORMATTER);
-        String endTime = LocalDateTime.now().format(FORMATTER);
-        List<String> uris = List.of("/events/" + event.getId());
-
-        List<ViewStatsDto> stats = getStats(startTime, endTime, uris);
-        if (stats.size() == 1) {
-            event.setViews(stats.get(0).getHits());
-        } else {
-            event.setViews(0L);
-        }
-    }*/
-
-/*   private List<ViewStatsDto> getStats(String startTime, String endTime, List<String> uris) {
-        return statClient.getStats(startTime, endTime, uris, false);
-    }*/
 }

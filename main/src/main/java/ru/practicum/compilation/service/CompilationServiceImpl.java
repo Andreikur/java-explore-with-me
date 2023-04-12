@@ -24,17 +24,16 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class CompilationServiceImpl implements CompilationService  {
+public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
 
     @Transactional(readOnly = true)
     @Override
     public List<CompilationDto> getCompilationsByParameters(Boolean pinned, int from, int size) {
-        List<Compilation> compilationList = new ArrayList<>();
-        int page = from/size;
+        int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        compilationList =compilationRepository.findCompilationsByParameters(pinned, pageRequest);
+        List<Compilation> compilationList = compilationRepository.findCompilationsByParameters(pinned, pageRequest);
         return CompilationMapper.toCompilationDto(compilationList);
     }
 
