@@ -22,8 +22,6 @@ public class ViewStateController {
                                        @RequestParam(required = false) String end,
                                        @RequestParam List<String> uris,
                                        @RequestParam(defaultValue = "false") Boolean unique) {
-
-
         return viewStatsService.getStats(LocalDateTime.parse(start, FORMATTER), LocalDateTime.parse(end, FORMATTER),
                 uris, unique);
     }

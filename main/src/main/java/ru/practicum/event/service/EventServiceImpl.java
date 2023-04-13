@@ -69,6 +69,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto getEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
+        event.setViews(event.getViews() + 1);
         saveEndpoint(event);
         //setView(event);
         //sendStat(event, request);
