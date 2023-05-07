@@ -20,10 +20,7 @@ public class ViewStatsServiceImpl implements ViewStatsService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime start,
-                                       LocalDateTime end,
-                                       List<String> uris,
-                                       Boolean unique) {
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (uris == null || uris.isEmpty()) {
             if (unique) {
                 return ViewStatsMapper.toViewStatsDto(endpointHitRepository.getStatsWithoutUriUnique(start, end));
