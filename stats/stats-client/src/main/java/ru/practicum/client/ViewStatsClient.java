@@ -1,27 +1,44 @@
  package ru.practicum.client;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-@Service
-public class ViewStatsClient extends BaseClient {
+import java.util.List;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class ViewStatsClient {
     private static final String API_PREFIX = "/stats";
+     private final WebClient webClient;
 
-    //@Autowired
-    public ViewStatsClient(@Value("${stats.url}") String serverUrl, RestTemplateBuilder builder) {
-        super(
-                builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
-                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                        .build()
-        );
-    }
 
-    public ResponseEntity<Object> getStats(Long id) {
-        return get("/" + id);
-    }
+     public ResponseEntity<Object> getViewStats(String start, String end, List<String> uris, Boolean unique) {
+         String paramsUri = uris.stream().reduce("", (result, uri) -> result + "&uris=" + uri);
+
+         return webClient.get()
+                 .uri(uriBuilder -> uriBuilder
+                         .path(API_PREFIX)
+                         .queryParam("start", start)
+                         .queryParam("end", end)
+                         .query(paramsUri)
+                         .queryParam("unique", unique)
+                         .build())
+                 .exchangeToMono(response -> {
+                     if (response.statusCode().is2xxSuccessful()) {
+                         return response.bodyToMono(Object.class)
+                                 .map(body -> ResponseEntity.ok().body(body));
+                     } else {
+                         return response.createException()
+                                 .flatMap(Mono::error);
+                     }
+                 })
+                 .block();
+     }
+
 }

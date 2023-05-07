@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import ru.practicum.endpointHit.EndpointHitDto;
 import ru.practicum.endpointHit.model.EndpointHit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EndpointHitMapper {
 
@@ -18,6 +21,14 @@ public final class EndpointHitMapper {
         );
     }
 
+    public static List<EndpointHit> toEndpointHit(Iterable<EndpointHitDto> endpointHitDtoList) {
+        List<EndpointHit> endpointHitList = new ArrayList<>();
+        for (EndpointHitDto endpointHitDto : endpointHitDtoList) {
+            endpointHitList.add(toEndpointHit(endpointHitDto));
+        }
+        return endpointHitList;
+    }
+
     public static EndpointHitDto toEndpointHitDto(EndpointHit endpointHit) {
         return new EndpointHitDto(
                 endpointHit.getId(),
@@ -26,5 +37,13 @@ public final class EndpointHitMapper {
                 endpointHit.getIp(),
                 endpointHit.getTimestamp()
         );
+    }
+
+    public static List<EndpointHitDto> toEndpointHitDto(Iterable<EndpointHit> endpointHitList) {
+        List<EndpointHitDto> endpointHitDtoList = new ArrayList<>();
+        for (EndpointHit endpointHit : endpointHitList) {
+            endpointHitDtoList.add(toEndpointHitDto(endpointHit));
+        }
+        return endpointHitDtoList;
     }
 }

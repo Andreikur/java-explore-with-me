@@ -24,9 +24,4 @@ public class EndpointHitServiceImpl implements EndpointHitService  {
         return EndpointHitMapper.toEndpointHitDto(endpointHit);
     }
 
-    @Transactional
-    @Override
-    public void addEndpointHitEvent(EndpointHitDto endpointHitDto) {
-        endpointHitRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
-    }
 }
