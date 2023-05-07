@@ -26,7 +26,6 @@ import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
-import ru.practicum.viewStats.ViewStatsDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -366,6 +365,7 @@ public class EventServiceImpl implements EventService {
         sendStat(events, request);
         return EventMapper.toEventFulDto(events);
     }
+
     public void sendStat(Event event, HttpServletRequest request) {
         LocalDateTime now = LocalDateTime.now();
         String remoteAddr = request.getRemoteAddr();
