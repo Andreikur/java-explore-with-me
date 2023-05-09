@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         event.setViews(event.getViews() + 1);
-        saveEndpoint(event);
+        //saveEndpoint(event);
         //setView(event);
         //sendStat(event, request);
         return EventMapper.toEventFulDto(event);
