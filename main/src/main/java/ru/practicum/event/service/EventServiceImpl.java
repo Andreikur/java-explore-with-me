@@ -24,6 +24,7 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.WrongTimeException;
 import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
+import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 import javax.persistence.EntityManager;
@@ -48,6 +49,7 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final ViewStatsClient viewStatsClient;
     private final EndpointHitClient endpointHitClient;
+    private final RequestRepository requestRepository;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -294,8 +296,8 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(eventRepository.save(event));
     }
 
-    @Transactional(readOnly = true)
-    @Override
+    //@Transactional(readOnly = true)
+/*    @Override
     public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
                                                           String rangeStart, String rangeEnd,
                                                           Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest request) {
@@ -357,6 +359,25 @@ public class EventServiceImpl implements EventService {
                 events = events.stream().sorted(Comparator.comparing(Event::getViews)).collect(Collectors.toList());
             }
         }
+
+        //Дописать увеличение просмотров
+
+        //setView(events);
+        sendStat(events, request);
+        return EventMapper.toEventFulDto(events);
+    }*/
+
+    @Override
+    public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
+                                                          String rangeStart, String rangeEnd,
+                                                          Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest request) {
+        LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
+        LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
+        int page = from / size;
+        PageRequest pageRequest = PageRequest.of(page, size);
+        List<Event> events = eventRepository.findByParamsOrderByDate(text.toLowerCase(), List.of(State.PUBLISHED),
+                categories, paid, start, end, pageRequest);
+
 
         //Дописать увеличение просмотров
 
