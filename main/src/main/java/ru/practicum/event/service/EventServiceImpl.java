@@ -59,7 +59,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventShortDto(eventList);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional//(readOnly = true)
     @Override
     public EventFullDto getEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
