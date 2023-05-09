@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoriesRepository;
 import ru.practicum.client.EndpointHitClient;
-import ru.practicum.client.ViewStatsClient;
 import ru.practicum.endpointHit.EndpointHitDto;
-import ru.practicum.enums.SortValue;
 import ru.practicum.enums.State;
 import ru.practicum.enums.StateActionForAdmin;
 import ru.practicum.enums.StateActionForUser;
@@ -24,7 +22,6 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.WrongTimeException;
 import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
-import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 import javax.persistence.EntityManager;
@@ -36,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,9 +43,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoriesRepository categoriesRepository;
     private final LocationRepository locationRepository;
-    private final ViewStatsClient viewStatsClient;
     private final EndpointHitClient endpointHitClient;
-    private final RequestRepository requestRepository;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
