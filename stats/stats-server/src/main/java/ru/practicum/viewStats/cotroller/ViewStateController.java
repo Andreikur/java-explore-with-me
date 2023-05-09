@@ -20,7 +20,7 @@ public class ViewStateController {
     @GetMapping
     public List<ViewStatsDto> getStats(@RequestParam(required = false) String start,
                                        @RequestParam(required = false) String end,
-                                       @RequestParam String uris,
+                                       @RequestParam(required = false) List<String> uris,
                                        @RequestParam(defaultValue = "false") Boolean unique) {
         return viewStatsService.getStats(LocalDateTime.parse(start, FORMATTER), LocalDateTime.parse(end, FORMATTER),
                 uris, unique);

@@ -18,7 +18,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
             "AND hit.uri IN ?3 " +
             "GROUP BY hit.app, hit.uri " +
             "ORDER BY COUNT (DISTINCT hit.ip) DESC ")
-    List<ViewStats> getStatsUnique(LocalDateTime start, LocalDateTime end, String uris);
+    List<ViewStats> getStatsUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT(hit.ip)) " +
             "FROM EndpointHit hit " +
@@ -26,7 +26,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
             "AND hit.uri IN ?3 " +
             "GROUP BY hit.app, hit.uri " +
             "ORDER BY COUNT (hit.ip) DESC ")
-    List<ViewStats> getStatsNotUnique(LocalDateTime start, LocalDateTime end, String uris);
+    List<ViewStats> getStatsNotUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT(DISTINCT hit.ip)) " +
             "FROM EndpointHit hit " +
