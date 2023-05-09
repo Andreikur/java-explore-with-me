@@ -294,7 +294,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(eventRepository.save(event));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
                                                           String rangeStart, String rangeEnd,
