@@ -26,6 +26,7 @@ import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
+import ru.practicum.viewStats.ViewStatsDto;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -416,7 +417,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    /*public void setView(List<Event> events) {
+/*    public void setView(List<Event> events) {
         LocalDateTime start = events.get(0).getCreatedOn();
         List<String> uris = new ArrayList<>();
         Map<String, Event> eventsUri = new HashMap<>();
@@ -452,7 +453,7 @@ public class EventServiceImpl implements EventService {
         }
     }*/
 
-    /*private List<ViewStatsDto> getViewStats(String startTime, String endTime, List<String> uris) {
+/*    private List<ViewStatsDto> getViewStats(String startTime, String endTime, List<String> uris) {
         return viewStatsClient.getViewStats(startTime, endTime, uris, false);
     }*/
 

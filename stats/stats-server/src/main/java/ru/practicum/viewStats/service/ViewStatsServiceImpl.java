@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.endpointHit.repository.EndpointHitRepository;
 import ru.practicum.viewStats.ViewStatsDto;
 import ru.practicum.viewStats.mapper.ViewStatsMapper;
@@ -18,9 +17,9 @@ import java.util.List;
 public class ViewStatsServiceImpl implements ViewStatsService {
     private final EndpointHitRepository endpointHitRepository;
 
-    @Transactional(readOnly = true)
+    //@Transactional(readOnly = true)
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String uris, Boolean unique) {
         if (uris == null || uris.isEmpty()) {
             if (unique) {
                 return ViewStatsMapper.toViewStatsDto(endpointHitRepository.getStatsWithoutUriUnique(start, end));
