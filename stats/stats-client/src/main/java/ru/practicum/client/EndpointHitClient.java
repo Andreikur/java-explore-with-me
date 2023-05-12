@@ -19,10 +19,10 @@ public class EndpointHitClient {
     private static final String API_PREFIX = "/hit";
     private final WebClient webClient;
 
-    @Transactional
+    //@Transactional
     public ResponseEntity<Object> addStats(EndpointHitDto endpointHitDto) {
         return webClient.post()
-                .uri(API_PREFIX)
+                .uri("/hit")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(endpointHitDto))
                 .exchangeToMono(response -> {
