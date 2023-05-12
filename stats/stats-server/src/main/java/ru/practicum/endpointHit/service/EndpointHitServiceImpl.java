@@ -21,6 +21,7 @@ public class EndpointHitServiceImpl implements EndpointHitService  {
     @Override
     public EndpointHitDto addEndpointHit(EndpointHitDto endpointHitDto) {
         EndpointHit endpointHit = endpointHitRepository.save(EndpointHitMapper.toEndpointHit(endpointHitDto));
+        log.info("EndpointHit сохранен в БД   ", endpointHit);
         return EndpointHitMapper.toEndpointHitDto(endpointHit);
     }
 
