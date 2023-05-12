@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,7 +21,7 @@ public class EndpointHitClient {
     //@Transactional
     public ResponseEntity<Object> addStats(EndpointHitDto endpointHitDto) {
         return webClient.post()
-                .uri("/hit")
+                .uri(API_PREFIX)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(endpointHitDto))
                 .exchangeToMono(response -> {
