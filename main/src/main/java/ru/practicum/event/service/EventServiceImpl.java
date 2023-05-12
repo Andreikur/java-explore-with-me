@@ -22,6 +22,8 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.WrongTimeException;
 import ru.practicum.location.model.Location;
 import ru.practicum.location.repository.LocationRepository;
+import ru.practicum.statistic.HitMapper;
+import ru.practicum.statistic.StatService;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 import javax.persistence.EntityManager;
@@ -44,6 +46,7 @@ public class EventServiceImpl implements EventService {
     private final CategoriesRepository categoriesRepository;
     private final LocationRepository locationRepository;
     private final EndpointHitClient endpointHitClient;
+    private final StatService statService;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -61,10 +64,12 @@ public class EventServiceImpl implements EventService {
 
     @Transactional//(readOnly = true)
     @Override
-    public EventFullDto getEvent(Long eventId) {
+    public EventFullDto getEvent(Long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         event.setViews(event.getViews() + 1);
+        statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
+
         //saveEndpoint(event);   !!!!!!!
         //setView(event);
         //sendStat(event, request);

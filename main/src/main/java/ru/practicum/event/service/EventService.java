@@ -25,6 +25,6 @@ public interface EventService {
                                                    String rangeEnd, Boolean onlyAvailable, String sort,
                                                    int from, int size, HttpServletRequest request);
 
-    EventFullDto getEvent(Long eventId);
+    EventFullDto getEvent(Long eventId, HttpServletRequest request);
 
 }
