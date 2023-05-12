@@ -32,14 +32,14 @@ services:
       - stats-server
     environment:
     #    - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5433/ewm-main-db
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-main-db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5433/ewm-main-db
 
   ewm-db:
     image: postgres:14-alpine
     container_name: ewm-db
     ports:
       #- "6542:5433"
-      - "6542:5432"
+      - "6542:5433"
     environment:
       - POSTGRES_DB=ewm-main-db
       - POSTGRES_USER=postgres

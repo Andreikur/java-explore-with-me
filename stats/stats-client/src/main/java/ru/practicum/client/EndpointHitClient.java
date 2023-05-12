@@ -18,7 +18,6 @@ public class EndpointHitClient {
     private static final String API_PREFIX = "/hit";
     private final WebClient webClient;
 
-    //@Transactional
     public ResponseEntity<Object> addStats(EndpointHitDto endpointHitDto) {
         return webClient.post()
                 .uri(API_PREFIX)
