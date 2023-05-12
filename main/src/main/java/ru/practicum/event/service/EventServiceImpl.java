@@ -476,7 +476,7 @@ public class EventServiceImpl implements EventService {
         return viewStatsClient.getViewStats(startTime, endTime, uris, false);
     }*/
 
-    public void saveEndpoint(Event event) {
+/*    public void saveEndpoint(Event event) {
         LocalDateTime creationTime = LocalDateTime.now();
         EndpointHitDto endpointHitDto = new EndpointHitDto();
         endpointHitDto.setApp("ewm-main-service");
@@ -484,5 +484,5 @@ public class EventServiceImpl implements EventService {
         endpointHitDto.setIp("0:0:0:0:0:0:0:1");
         endpointHitDto.setTimestamp(creationTime);
         endpointHitClient.addStats(endpointHitDto);
-    }
+    }*/
 }

@@ -8,7 +8,8 @@ import ru.practicum.enums.RequestStatus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestDto {
+public class
+RequestDto {
     private Long id;
     private String created;
     private Long event;
