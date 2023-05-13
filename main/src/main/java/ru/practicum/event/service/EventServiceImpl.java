@@ -45,7 +45,6 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoriesRepository categoriesRepository;
     private final LocationRepository locationRepository;
-    private final EndpointHitClient endpointHitClient;
     private final StatService statService;
 
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
