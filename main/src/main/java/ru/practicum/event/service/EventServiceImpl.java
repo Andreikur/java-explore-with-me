@@ -62,17 +62,13 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventShortDto(eventList);
     }
 
-    @Transactional//(readOnly = true)
+    @Transactional
     @Override
     public EventFullDto getEvent(Long eventId, HttpServletRequest request) {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Пользователь с таким Id не найден")));
         event.setViews(event.getViews() + 1);
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
-
-        //saveEndpoint(event);   !!!!!!!
-        //setView(event);
-        //sendStat(event, request);
         return EventMapper.toEventFulDto(event);
     }
 
@@ -94,7 +90,6 @@ public class EventServiceImpl implements EventService {
         event.setCategory(category);
         event.setViews(0L);
         event.setLocation(location);
-        //event.setPublishedOn(LocalDateTime.now());
         EventFullDto eventFullDto = EventMapper.toEventFulDto(eventRepository.save(event));
         return eventFullDto;
     }
@@ -217,12 +212,6 @@ public class EventServiceImpl implements EventService {
         if (events.size() == 0) {
             return new ArrayList<>();
         }
-
-        //Увеличить колво просмотров
-
-        //setView(events);
-
-        //
         return EventMapper.toEventFulDto(events);
     }
 
@@ -234,8 +223,6 @@ public class EventServiceImpl implements EventService {
         if (updateEventAdminDto == null) {
             return EventMapper.toEventFulDto(event);
         }
-
-
 
         if (updateEventAdminDto.getAnnotation() != null) {
             event.setAnnotation(updateEventAdminDto.getAnnotation());
@@ -295,77 +282,6 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(eventRepository.save(event));
     }
 
-/*    @Transactional(readOnly = true)
-    @Override
-    public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
-                                                          String rangeStart, String rangeEnd,
-                                                          Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest request) {
-        LocalDateTime start = rangeStart != null ? LocalDateTime.parse(rangeStart, FORMATTER) : null;
-        LocalDateTime end = rangeEnd != null ? LocalDateTime.parse(rangeEnd, FORMATTER) : null;
-
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Event> query = builder.createQuery(Event.class);
-
-        Root<Event> root = query.from(Event.class);
-        Predicate criteria = builder.conjunction();
-
-        if (text != null) {
-            Predicate annotationContain = builder.like(builder.lower(root.get("annotation")),
-                    "%" + text.toLowerCase() + "%");
-            Predicate descriptionContain = builder.like(builder.lower(root.get("description")),
-                    "%" + text.toLowerCase() + "%");
-            Predicate containText = builder.or(annotationContain, descriptionContain);
-
-            criteria = builder.and(criteria, containText);
-        }
-
-        if (categories != null && categories.size() > 0) {
-            Predicate containStates = root.get("category").in(categories);
-            criteria = builder.and(criteria, containStates);
-        }
-
-        if (paid != null) {
-            Predicate isPaid;
-            if (paid) {
-                isPaid = builder.isTrue(root.get("paid"));
-            } else {
-                isPaid = builder.isFalse(root.get("paid"));
-            }
-            criteria = builder.and(criteria, isPaid);
-        }
-
-        if (rangeStart != null) {
-            Predicate greaterTime = builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), start);
-            criteria = builder.and(criteria, greaterTime);
-        }
-        if (rangeEnd != null) {
-            Predicate lessTime = builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class), end);
-            criteria = builder.and(criteria, lessTime);
-        }
-
-        query.select(root).where(criteria).orderBy(builder.asc(root.get("eventDate")));
-        List<Event> events = entityManager.createQuery(query)
-                .setFirstResult(from)
-                .setMaxResults(size)
-                .getResultList();
-
-        if (sort != null) {
-
-            SortValue thisSortValue = SortValue.valueOf(sort);
-            if (thisSortValue.equals(SortValue.EVENT_DATE)) {
-                events = events.stream().sorted(Comparator.comparing(Event::getEventDate)).collect(Collectors.toList());
-            } else {
-                events = events.stream().sorted(Comparator.comparing(Event::getViews)).collect(Collectors.toList());
-            }
-        }
-
-        //Дописать увеличение просмотров
-
-        //setView(events);
-        sendStat(events, request);
-        return EventMapper.toEventFulDto(events);
-    }*/
-
     @Transactional(readOnly = true)
     @Override
     public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
@@ -378,115 +294,11 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findByParamsOrderByDate(text.toLowerCase(), List.of(State.PUBLISHED),
                 categories, paid, start, end, pageRequest);
 
-        //Дописать увеличение просмотров
         for (Event event : events) {
             event.setViews(event.getViews() + 1);
         }
 
         statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
-
-        //setView(events);
-        //sendStat(events, request);
         return EventMapper.toEventFulDto(events);
     }
-
-    public void sendStat(Event event, HttpServletRequest request) {
-        LocalDateTime now = LocalDateTime.now();
-        String remoteAddr = request.getRemoteAddr();
-        String nameService = "main-service";
-
-        EndpointHitDto requestDto = new EndpointHitDto();
-        requestDto.setTimestamp(LocalDateTime.now());
-        requestDto.setUri("/events");
-        requestDto.setApp(nameService);
-        requestDto.setIp(remoteAddr);
-        endpointHitClient.addStats(requestDto);
-        sendStatForTheEvent(event.getId(), remoteAddr, now, nameService);
-    }
-
-    public void sendStat(List<Event> events, HttpServletRequest request) {
-        LocalDateTime now = LocalDateTime.now();
-        String remoteAddr = request.getRemoteAddr();
-        String nameService = "main-service";
-
-        EndpointHitDto requestDto = new EndpointHitDto();
-        requestDto.setTimestamp(LocalDateTime.now());
-        requestDto.setUri("/events");
-        requestDto.setApp(nameService);
-        requestDto.setIp(request.getRemoteAddr());
-        endpointHitClient.addStats(requestDto);
-        sendStatForEveryEvent(events, remoteAddr, LocalDateTime.now(), nameService);
-    }
-
-    private void sendStatForTheEvent(Long eventId, String remoteAddr, LocalDateTime now,
-                                     String nameService) {
-        EndpointHitDto requestDto = new EndpointHitDto();
-        requestDto.setTimestamp(LocalDateTime.now());
-        requestDto.setUri("/events/" + eventId);
-        requestDto.setApp(nameService);
-        requestDto.setIp(remoteAddr);
-        endpointHitClient.addStats(requestDto);
-    }
-
-    private void sendStatForEveryEvent(List<Event> events, String remoteAddr, LocalDateTime now,
-                                       String nameService) {
-        for (Event event : events) {
-            EndpointHitDto requestDto = new EndpointHitDto();
-            requestDto.setTimestamp(LocalDateTime.now());
-            requestDto.setUri("/events/" + event.getId());
-            requestDto.setApp(nameService);
-            requestDto.setIp(remoteAddr);
-            endpointHitClient.addStats(requestDto);
-        }
-    }
-
-/*    public void setView(List<Event> events) {
-        LocalDateTime start = events.get(0).getCreatedOn();
-        List<String> uris = new ArrayList<>();
-        Map<String, Event> eventsUri = new HashMap<>();
-        String uri = "";
-        for (Event event : events) {
-            if (start.isBefore(event.getCreatedOn())) {
-                start = event.getCreatedOn();
-            }
-            uri = "/events/" + event.getId();
-            uris.add(uri);
-            eventsUri.put(uri, event);
-            event.setViews(0L);
-        }
-
-        LocalDateTime startTime = start;
-        LocalDateTime endTime = LocalDateTime.now();
-
-        List<ViewStatsDto> stats = getViewStats(startTime.format(FORMATTER), endTime.format(FORMATTER), uris);
-        stats.forEach((stat) ->
-                eventsUri.get(stat.getUri()).setViews(stat.getHits()));
-    }*/
-
-    /*public void setView(Event event) {
-        LocalDateTime startTime = event.getCreatedOn();
-        LocalDateTime endTime = LocalDateTime.now();
-        List<String> uris = List.of("/events/" + event.getId());
-
-        List<ViewStatsDto> statsList = getViewStats(startTime.format(FORMATTER), endTime.format(FORMATTER), uris);
-        if (statsList.size() == 1) {
-            event.setViews(statsList.get(0).getHits());
-        } else {
-            event.setViews(0L);
-        }
-    }*/
-
-/*    private List<ViewStatsDto> getViewStats(String startTime, String endTime, List<String> uris) {
-        return viewStatsClient.getViewStats(startTime, endTime, uris, false);
-    }*/
-
-/*    public void saveEndpoint(Event event) {
-        LocalDateTime creationTime = LocalDateTime.now();
-        EndpointHitDto endpointHitDto = new EndpointHitDto();
-        endpointHitDto.setApp("ewm-main-service");
-        endpointHitDto.setUri("/events/" + event.getId());
-        endpointHitDto.setIp("0:0:0:0:0:0:0:1");
-        endpointHitDto.setTimestamp(creationTime);
-        endpointHitClient.addStats(endpointHitDto);
-    }*/
 }

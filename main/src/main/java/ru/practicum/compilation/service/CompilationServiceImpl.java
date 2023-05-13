@@ -52,9 +52,6 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setEvents(events);
         compilation.setPinned(newCompilationDto.getPinned());
         compilation.setTitle(newCompilationDto.getTitle());
-
-        //Compilation savedCompilation = compilationRepository.save(compilation);
-        //setView(savedCompilation);
         return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
     }
 
@@ -81,8 +78,6 @@ public class CompilationServiceImpl implements CompilationService {
         if (newCompilationDto.getTitle() != null) {
             compilation.setTitle(newCompilationDto.getTitle());
         }
-        //Compilation updatedCompilation = compilationRepository.save(compilation);
-        //setView(updatedCompilation);
         return CompilationMapper.toCompilationDto(compilation);
     }
 }
