@@ -12,22 +12,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RepositoryRestResource(path = "eventRepository")
-//@Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT b FROM Event b " +
             "WHERE b.initiator.id = ?1")
     List<Event> findAllEventThisUserPage(Long userId, Pageable pageable);
 
-    @Query("SELECT e from Event e " +
-            "where e.initiator.id = :users and " +
-            "e.state = :state and " +
-            "e.category.id = :categories and " +
-            "e.publishedOn between :start and :end")
+    @Query("SELECT e FROM Event e " +
+            "WHERE e.initiator.id = ?1 AND " +
+            "e.state = ?2 AND " +
+            "e.category.id = ?3 AND " +
+            "e.publishedOn BETWEEN ?4 AND ?5")
     List<Event> searchEvents(Long users, State state, Integer categories, LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    @Query("SELECT e " +
-            "FROM Event AS e " +
+    @Query("SELECT e FROM Event e " +
             "WHERE " +
             "(" +
             ":text IS NULL " +
