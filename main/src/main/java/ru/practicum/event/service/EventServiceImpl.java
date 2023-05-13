@@ -295,8 +295,8 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFulDto(eventRepository.save(event));
     }
 
-    //@Transactional(readOnly = true)
-/*    @Override
+/*    @Transactional(readOnly = true)
+    @Override
     public List<EventFullDto> searchForEventsByParameters(String text, List<Long> categories, Boolean paid,
                                                           String rangeStart, String rangeEnd,
                                                           Boolean onlyAvailable, String sort, int from, int size, HttpServletRequest request) {
@@ -378,8 +378,12 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findByParamsOrderByDate(text.toLowerCase(), List.of(State.PUBLISHED),
                 categories, paid, start, end, pageRequest);
 
-
         //Дописать увеличение просмотров
+        for(Event event : events) {
+            event.setViews(event.getViews() + 1);
+        }
+
+        statService.createView(HitMapper.toEndpointHit("ewm-main-service", request));
 
         //setView(events);
         //sendStat(events, request);

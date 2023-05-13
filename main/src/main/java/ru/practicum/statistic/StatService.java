@@ -23,14 +23,13 @@ public class StatService {
             String rangeEnd,
             List<String> uris,
             Boolean unique) {
-        log.info("StatsService - method call 'getViewStats' with params: rangeStart={}, rangeEnd={}, uris={}, " +
+        log.info("StatsService - вызов метода 'getViewStats' с параметрами: rangeStart={}, rangeEnd={}, uris={}, " +
                 "unique={}", rangeStart, rangeEnd, uris, unique);
         return viewStatsClient.getViewStats(rangeStart, rangeEnd, uris, unique);
     }
 
-    //@Transactional
     public void createView(EndpointHitDto endpointHitDto) {
-        log.info("StatsService - method call 'createView' with params: endpointHitDto={}", endpointHitDto);
+        log.info("StatsService - вызов метода 'createView' с параметрами: endpointHitDto={}", endpointHitDto);
         endpointHitClient.addStats(endpointHitDto);
     }
 }
