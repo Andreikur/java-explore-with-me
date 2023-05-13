@@ -379,7 +379,7 @@ public class EventServiceImpl implements EventService {
                 categories, paid, start, end, pageRequest);
 
         //Дописать увеличение просмотров
-        for(Event event : events) {
+        for (Event event : events) {
             event.setViews(event.getViews() + 1);
         }
 
