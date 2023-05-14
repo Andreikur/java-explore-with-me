@@ -8,10 +8,11 @@ import java.time.LocalDateTime;
 
 public class HitMapper {
     public static EndpointHitDto toEndpointHit(String app, HttpServletRequest request) {
-        return new EndpointHitDto(null,
-                app,
-                request.getRequestURI(),
-                request.getRemoteAddr(),
-                LocalDateTime.now());
+        return EndpointHitDto.builder()
+                .app(app)
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 }

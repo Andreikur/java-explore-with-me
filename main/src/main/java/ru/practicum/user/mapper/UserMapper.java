@@ -13,19 +13,18 @@ import java.util.List;
 public final class UserMapper {
 
     public static User toUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
+        return User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
     }
 
     public static User toUser(UserShortDto userShortDto) {
-        return new User(
-                userShortDto.getId(),
-                userShortDto.getName(),
-                null
-        );
+        return User.builder()
+                .id(userShortDto.getId())
+                .name(userShortDto.getName())
+                .build();
     }
 
     public static UserDto toUserDto(User user) {

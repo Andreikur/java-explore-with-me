@@ -1,6 +1,7 @@
 package ru.practicum.event.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.location.dto.LocationDto;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class NewEventDto {
     private Long id;
     @NotNull

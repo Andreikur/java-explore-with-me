@@ -15,23 +15,23 @@ public final class RequestMapper {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Request toRequest(RequestDto requestDto) {
-        return new Request(
-                requestDto.getId(),
-                LocalDateTime.parse(requestDto.getCreated(), FORMATTER),
-                requestDto.getEvent(),
-                requestDto.getRequester(),
-                requestDto.getStatus()
-        );
+        return Request.builder()
+                .id(requestDto.getId())
+                .created(LocalDateTime.parse(requestDto.getCreated(), FORMATTER))
+                .event(requestDto.getEvent())
+                .requester(requestDto.getRequester())
+                .status(requestDto.getStatus())
+                .build();
     }
 
     public static RequestDto toRequestDto(Request request) {
-        return new RequestDto(
-                request.getId(),
-                request.getCreated().format(FORMATTER),
-                request.getEvent(),
-                request.getRequester(),
-                request.getStatus()
-        );
+        return RequestDto.builder()
+                .id(request.getId())
+                .created(request.getCreated().format(FORMATTER))
+                .event(request.getEvent())
+                .requester(request.getRequester())
+                .status(request.getStatus())
+                .build();
     }
 
     public static List<Request> toRequest(Iterable<RequestDto> requestDtos) {

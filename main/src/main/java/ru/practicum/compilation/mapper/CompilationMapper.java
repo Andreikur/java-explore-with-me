@@ -13,21 +13,21 @@ import java.util.List;
 public final class CompilationMapper {
 
     public static Compilation toCompilation(CompilationDto compilationDto) {
-        return new Compilation(
-            compilationDto.getId(),
-                compilationDto.getPinned(),
-                compilationDto.getTitle(),
-                EventMapper.toEvent(compilationDto.getEvents())
-        );
+        return Compilation.builder()
+                .id(compilationDto.getId())
+                .pinned(compilationDto.getPinned())
+                .title(compilationDto.getTitle())
+                .events(EventMapper.toEvent(compilationDto.getEvents()))
+                .build();
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation) {
-        return new CompilationDto(
-                compilation.getId(),
-                compilation.getPinned(),
-                compilation.getTitle(),
-                EventMapper.toEventShortDto(compilation.getEvents())
-        );
+        return CompilationDto.builder()
+                .id(compilation.getId())
+                .pinned(compilation.getPinned())
+                .title(compilation.getTitle())
+                .events(EventMapper.toEventShortDto(compilation.getEvents()))
+                .build();
     }
 
     public static List<Compilation> toCompilation(Iterable<CompilationDto> compilationDtos) {

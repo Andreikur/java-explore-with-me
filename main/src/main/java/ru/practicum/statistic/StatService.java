@@ -12,7 +12,6 @@ import java.util.List;
 
 @Slf4j
 @Service
-//@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StatService {
     private final ViewStatsClient viewStatsClient;

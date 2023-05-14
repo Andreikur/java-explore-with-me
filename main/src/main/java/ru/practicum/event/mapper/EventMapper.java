@@ -21,101 +21,75 @@ public final class EventMapper {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Event toEvent(EventShortDto eventShortDto) {
-        return new Event(
-                eventShortDto.getId(),
-                eventShortDto.getAnnotation(),
-                CategoryMapper.toCategory(eventShortDto.getCategory()),
-                null,
-                null,
-                null,
-                LocalDateTime.parse(eventShortDto.getEventDate(), FORMATTER),
-                UserMapper.toUser(eventShortDto.getInitiator()),
-                null,
-                eventShortDto.getPaid(),
-                null,
-                null,
-                null,
-                null,
-                eventShortDto.getTitle(),
-                eventShortDto.getViews()
-        );
+        return Event.builder()
+                .id(eventShortDto.getId())
+                .annotation(eventShortDto.getAnnotation())
+                .category(CategoryMapper.toCategory(eventShortDto.getCategory()))
+                .eventDate(LocalDateTime.parse(eventShortDto.getEventDate(), FORMATTER))
+                .initiator(UserMapper.toUser(eventShortDto.getInitiator()))
+                .paid(eventShortDto.getPaid())
+                .title(eventShortDto.getTitle())
+                .views(eventShortDto.getViews())
+                .build();
     }
 
     public static Event toEvent(EventFullDto eventFullDto) {
-        return new Event(
-                eventFullDto.getId(),
-                eventFullDto.getAnnotation(),
-                CategoryMapper.toCategory(eventFullDto.getCategory()),
-                eventFullDto.getConfirmedRequests(),
-                LocalDateTime.parse(eventFullDto.getCreatedOn(), FORMATTER),
-                eventFullDto.getDescription(),
-                LocalDateTime.parse(eventFullDto.getEventDate(), FORMATTER),
-                UserMapper.toUser(eventFullDto.getInitiator()),
-                eventFullDto.getLocation(),
-                eventFullDto.getPaid(),
-                eventFullDto.getParticipantLimit(),
-                LocalDateTime.parse(eventFullDto.getPublishedOn(), FORMATTER),
-                eventFullDto.getRequestModeration(),
-                eventFullDto.getState(),
-                eventFullDto.getTitle(),
-                eventFullDto.getViews()
-        );
+        return Event.builder()
+                .id(eventFullDto.getId())
+                .annotation(eventFullDto.getAnnotation())
+                .category(CategoryMapper.toCategory(eventFullDto.getCategory()))
+                .confirmedRequests(eventFullDto.getConfirmedRequests())
+                .createdOn(LocalDateTime.parse(eventFullDto.getCreatedOn(), FORMATTER))
+                .description(eventFullDto.getDescription())
+                .eventDate(LocalDateTime.parse(eventFullDto.getEventDate(), FORMATTER))
+                .initiator(UserMapper.toUser(eventFullDto.getInitiator()))
+                .location(eventFullDto.getLocation())
+                .paid(eventFullDto.getPaid())
+                .participantLimit(eventFullDto.getParticipantLimit())
+                .publishedOn(LocalDateTime.parse(eventFullDto.getPublishedOn(), FORMATTER))
+                .requestModeration(eventFullDto.getRequestModeration())
+                .state(eventFullDto.getState())
+                .title(eventFullDto.getTitle())
+                .views(eventFullDto.getViews())
+                .build();
     }
 
     public static Event toEvent(NewEventDto newEventDto) {
-        return new Event(
-                newEventDto.getId(),
-                newEventDto.getAnnotation(),
-                null,
-                null,
-                null,
-                newEventDto.getDescription(),
-                LocalDateTime.parse(newEventDto.getEventDate(),FORMATTER),
-                null,
-                null,
-                newEventDto.getPaid(),
-                newEventDto.getParticipantLimit(),
-                null,
-                newEventDto.getRequestModeration(),
-                null,
-                newEventDto.getTitle(),
-                null
-        );
+        return Event.builder()
+                .id(newEventDto.getId())
+                .annotation(newEventDto.getAnnotation())
+                .description(newEventDto.getDescription())
+                .eventDate(LocalDateTime.parse(newEventDto.getEventDate(),FORMATTER))
+                .paid(newEventDto.getPaid())
+                .participantLimit(newEventDto.getParticipantLimit())
+                .requestModeration(newEventDto.getRequestModeration())
+                .title(newEventDto.getTitle())
+                .build();
     }
 
     public static EventFullDto toEventFulDto(NewEventDto newEventDto) {
-        return new EventFullDto(
-                null,
-                newEventDto.getAnnotation(),
-                null,
-                null,
-                null,
-                newEventDto.getDescription(),
-                newEventDto.getEventDate(),
-                null,
-                //newEventDto.getLocation(),
-                null,
-                newEventDto.getPaid(),
-                newEventDto.getParticipantLimit(),
-                null,
-                newEventDto.getRequestModeration(),
-                null,
-                newEventDto.getTitle(),
-                null
-        );
+        return EventFullDto.builder()
+                .annotation(newEventDto.getAnnotation())
+                .description(newEventDto.getDescription())
+                .eventDate(newEventDto.getEventDate())
+                .paid(newEventDto.getPaid())
+                .participantLimit(newEventDto.getParticipantLimit())
+                .requestModeration(newEventDto.getRequestModeration())
+                .title(newEventDto.getTitle())
+                .build();
     }
 
     public static EventShortDto toEventShortDto(Event event) {
-        return new EventShortDto(
-                event.getId(),
-                event.getAnnotation(),
-                CategoryMapper.toCategoryDto(event.getCategory()),
-                event.getEventDate().format(FORMATTER),
-                UserMapper.toUserShortDto(event.getInitiator()),
-                event.getPaid(),
-                event.getTitle(),
-                event.getViews()
-        );
+        return EventShortDto.builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toCategoryDto(event.getCategory()))
+                .eventDate(event.getEventDate().format(FORMATTER))
+                .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .paid(event.getPaid())
+                .title(event.getTitle())
+                .views(event.getViews())
+                .build();
     }
 
     public static EventFullDto toEventFulDto(Event event) {
@@ -125,24 +99,24 @@ public final class EventMapper {
         } else {
             dateTimeString = event.getPublishedOn().format(FORMATTER);
         }
-        return new EventFullDto(
-                event.getId(),
-                event.getAnnotation(),
-                CategoryMapper.toCategoryDto(event.getCategory()),
-                event.getConfirmedRequests(),
-                event.getCreatedOn().format(FORMATTER),
-                event.getDescription(),
-                event.getEventDate().format(FORMATTER),
-                UserMapper.toUserShortDto(event.getInitiator()),
-                event.getLocation(),
-                event.getPaid(),
-                event.getParticipantLimit(),
-                dateTimeString,
-                event.getRequestModeration(),
-                event.getState(),
-                event.getTitle(),
-                event.getViews()
-        );
+        return EventFullDto.builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toCategoryDto(event.getCategory()))
+                .confirmedRequests(event.getConfirmedRequests())
+                .createdOn(event.getCreatedOn().format(FORMATTER))
+                .description(event.getDescription())
+                .eventDate(event.getEventDate().format(FORMATTER))
+                .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                .location(event.getLocation())
+                .paid(event.getPaid())
+                .participantLimit(event.getParticipantLimit())
+                .publishedOn(dateTimeString)
+                .requestModeration(event.getRequestModeration())
+                .state(event.getState())
+                .title(event.getTitle())
+                .views(event.getViews())
+                .build();
     }
 
     public static List<Event> toEventFromEventFulDto(Iterable<EventFullDto> eventsFulDto) {

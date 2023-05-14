@@ -1,6 +1,7 @@
 package ru.practicum.event.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.enums.StateActionForUser;
@@ -9,6 +10,7 @@ import ru.practicum.location.model.Location;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UpdateEventUserRequest {
     private String annotation;
     private Long category;

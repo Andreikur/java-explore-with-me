@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "events", schema = "public")
 @Data
 @NoArgsConstructor
+@Builder
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +29,6 @@ public class Event {
     private LocalDateTime createdOn;
     private String description;
     @Column(name = "event_date")
-    //@Future
     private LocalDateTime eventDate;
     @OneToOne
     @JoinColumn(name = "initiator_id", referencedColumnName = "id")
