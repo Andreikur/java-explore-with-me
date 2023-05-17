@@ -9,24 +9,36 @@ import ru.practicum.viewStats.model.ViewStats;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@RepositoryRestResource(path = "endpoint_hit")
+@RepositoryRestResource(path = "endpointHitRepository")
 public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> {
 
-    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(e.app, e.uri, COUNT(DISTINCT e.ip)) " +
-            "FROM EndpointHit e " +
-            "WHERE e.timestamp >= ?1 " +
-            "AND e.timestamp <= ?2 " +
-            "AND e.uri IN (?3) " +
-            "GROUP BY e.app, e.uri " +
-            "ORDER BY COUNT (DISTINCT e.ip) DESC ")
+    @Query("select new ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT(DISTINCT hit.ip)) " +
+            "FROM EndpointHit hit " +
+            "WHERE (hit.timestamp BETWEEN ?1 AND ?2) " +
+            "AND hit.uri IN ?3 " +
+            "GROUP BY hit.app, hit.uri " +
+            "ORDER BY COUNT (DISTINCT hit.ip) DESC ")
     List<ViewStats> getStatsUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(e.app, e.uri, COUNT(e.ip)) " +
-            "FROM EndpointHit e " +
-            "WHERE e.timestamp >= ?1 " +
-            "AND e.timestamp <= ?2 " +
-            "AND e.uri IN (?3) " +
-            "GROUP BY e.app, e.uri " +
-            "ORDER BY COUNT (e.ip) DESC ")
+    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT(hit.ip)) " +
+            "FROM EndpointHit hit " +
+            "WHERE (hit.timestamp BETWEEN ?1 AND ?2) " +
+            "AND hit.uri IN ?3 " +
+            "GROUP BY hit.app, hit.uri " +
+            "ORDER BY COUNT (hit.ip) DESC ")
     List<ViewStats> getStatsNotUnique(LocalDateTime start, LocalDateTime end, List<String> uris);
+
+    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT(DISTINCT hit.ip)) " +
+            "FROM EndpointHit hit " +
+            "WHERE (hit.timestamp BETWEEN ?1 and ?2) " +
+            "GROUP BY hit.app, hit.uri " +
+            "ORDER BY COUNT(DISTINCT hit.ip) DESC ")
+    List<ViewStats> getStatsWithoutUriUnique(LocalDateTime start, LocalDateTime end);
+
+    @Query("SELECT NEW ru.practicum.viewStats.model.ViewStats(hit.app, hit.uri, COUNT (hit.ip)) " +
+            "FROM EndpointHit hit " +
+            "WHERE (hit.timestamp BETWEEN ?1 AND ?2) " +
+            "GROUP BY hit.app, hit.uri " +
+            "ORDER BY COUNT (hit.ip) DESC ")
+    List<ViewStats> getStatsWithoutUriNotUnique(LocalDateTime start, LocalDateTime end);
 }
