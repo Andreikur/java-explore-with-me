@@ -3,7 +3,6 @@ package ru.practicum.comments.service;
 import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.dto.NewCommentDto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommentService {
