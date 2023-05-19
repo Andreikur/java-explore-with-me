@@ -106,6 +106,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleUserNameAlreadyExistException(final CommentConflictException exception) {
+        return new ErrorResponse(exception.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.FORBIDDEN.getReasonPhrase().toUpperCase(), LocalDateTime.now().format(FORMATTER));
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleException(final Exception exception) {
         log.info("{400}", exception.getMessage(), exception);
